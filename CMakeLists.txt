@@ -7,9 +7,9 @@ set(CMAKE_CXX_COMPILER g++)
 set(CMAKE_REQUIRED_LIBRARIES "-lglog -pthread")
 set(CMAKE_CXX_FLAGS "-fconcepts")
 
-file(GLOB_RECURSE SRCS ${PROJECT_SOURCE_DIR}/src/*/*.c*)
+file(GLOB_RECURSE SRCS ${PROJECT_SOURCE_DIR}/src/*.c*)
 file(GLOB_RECURSE LIBS ${PROJECT_SOURCE_DIR}/lib/*/*.c*)
-add_executable(Concurrent src/main.cpp ${GE_PROTO_FILES} ${SRCS} ${LIBS})
+add_executable(Concurrent src/main.cpp ${SRCS} ${LIBS})
 
 find_package(Threads REQUIRED)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
