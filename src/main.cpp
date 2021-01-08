@@ -16,16 +16,14 @@
  */
 
 #include "config.h"
-#include "functions.h"
-
-#include <iostream>
+#include "benchmark.h"
 
 int main (int argc, char * argv[]) {
     google::InitGoogleLogging (argv[0]);
 
     LOG (INFO) << "Start Running";
 
-    fibonacci (50);
+    benchmark ();
 
     LOG (INFO) << "Stop Running";
 }
