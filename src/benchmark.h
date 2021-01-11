@@ -13,7 +13,9 @@
 void benchmark () {
     auto total = TIME (
             for (int x = 0; x < 50; ++x) {
-                std::cout << "fibonacci\t" << TIME (LOG (INFO) << fibonacci (x)) << std::endl;
+                std::cout << "fibonacci\t" << TIME (
+                        LOG (INFO) << "fib(" << x << ") = " << fibonacci (x)
+                        ) << std::endl;
             }
     );
     std::cout << "total\t" << total.count() << std::endl;

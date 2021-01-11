@@ -18,7 +18,7 @@ target_link_libraries(Concurrent glog)
 
 find_package(Catch2 CONFIG)
 IF (Catch2_FOUND)
-    file(GLOB_RECURSE TEST_SRCS ${PROJECT_SOURCE_DIR}/test/*.c*)
+    file(GLOB_RECURSE TEST_SRCS ${PROJECT_SOURCE_DIR}/test/*.c* ${PROJECT_SOURCE_DIR}/src/functions.cpp)
     add_executable(Test ${GEN_PROTO_FILES} ${TEST_SRCS} ${LIBS})
 
     add_compile_definitions(Test PRIVATE ERRORS_AS_WARNINGS)
