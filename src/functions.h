@@ -1,7 +1,7 @@
 #ifndef CONCURRENT_FUNCTIONS_H
 #define CONCURRENT_FUNCTIONS_H
 
-int fibonacci (int index);
+unsigned long long fibonacci (unsigned long long index);
 
 #endif //CONCURRENT_FUNCTIONS_H
 

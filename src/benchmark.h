@@ -4,6 +4,7 @@
 #include "config.h"
 
 #include "functions.h"
+#include "helpers.h"
 #include "time.h"
 
 #include <chrono>
@@ -11,7 +12,9 @@
 
 void benchmark () {
     auto total = TIME (
-        std::cout << "fibonacci\t" << TIME (fibonacci (50)).count() << std::endl;
+            for (int x = 0; x < 50; ++x) {
+                std::cout << "fibonacci\t" << TIME (LOG (INFO) << fibonacci (x)) << std::endl;
+            }
     );
     std::cout << "total\t" << total.count() << std::endl;
 }

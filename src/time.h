@@ -21,7 +21,7 @@
     " microseconds to execute";} true
 
 
-#define TIME(expr) [] () -> std::chrono::microseconds {             \
+#define TIME(expr) [&] () -> std::chrono::microseconds {            \
     auto __start__ = std::chrono::high_resolution_clock::now();     \
     try { expr; }                                                   \
     catch (std::exception & e) {                                    \
