@@ -20,6 +20,9 @@ std::string const STR = std::string();
 }; true
 #endif
 
+#define ITERATIONS 20
+#define MAX_FIB 50
+
 #endif //CONCURRENT_CONFIG_H
 
 /* Copyright (C) 2020 Aaron Alef */
