@@ -3,10 +3,9 @@
 
 // Minimum LOG level. 0 = Everything, 1 = Ignore LOG (INFO), ...
 #define GOOGLE_STRIP_LOG 0
-
 #include <glog/logging.h>
-#include <string>
 
+#include <string>
 std::string const STR = std::string();
 
 #ifdef ERRORS_AS_WARNINGS
@@ -20,6 +19,9 @@ std::string const STR = std::string();
     throw error;                    \
 }; true
 #endif
+
+#define ITERATIONS 20
+#define MAX_FIB 50
 
 #endif //CONCURRENT_CONFIG_H
 

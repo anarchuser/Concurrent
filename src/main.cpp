@@ -16,13 +16,14 @@
  */
 
 #include "config.h"
+#include "benchmark.h"
 
 int main (int argc, char * argv[]) {
     google::InitGoogleLogging (argv[0]);
 
     LOG (INFO) << "Start Running";
 
-
+    benchmark ();
 
     LOG (INFO) << "Stop Running";
 }
