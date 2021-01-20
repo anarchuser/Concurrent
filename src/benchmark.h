@@ -3,6 +3,8 @@
 
 #include "../config.h"
 
+#include "../lib/Task/Task.h"
+
 #include "functions.h"
 #include "helpers.h"
 #include "time.h"
@@ -13,11 +15,11 @@
 void benchmark () {
     auto total = TIME (
             /* Fibonacci */
-            auto fib = TIME (
+            auto fib_time = TIME (
                     for (int x = MAX_FIB - ITERATIONS + 1; x <= MAX_FIB; ++x) {
                         std::cout << "fibonacci\t" << x << "\t" << TIME (fibonacci (x)) << std::endl;
                     });
-            std::cout << "fibonacci\tΣ\t" << fib << std::endl;
+            std::cout << "fibonacci\tΣ\t" << fib_time << std::endl;
 
             /* Sleep / Counter */
             auto sleep = TIME (
