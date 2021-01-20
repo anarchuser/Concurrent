@@ -4,7 +4,9 @@
 #include <glog/logging.h>
 #include <catch2/catch.hpp>
 
-#include "../src/config.h"
+#include "../config.h"
+
+using namespace std;
 
 int main (int argc, char * argv[]) {
     google::InitGoogleLogging(argv [0]);

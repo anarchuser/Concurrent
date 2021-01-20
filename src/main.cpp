@@ -15,15 +15,18 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "config.h"
+#include "../config.h"
 #include "benchmark.h"
+
+#include "../lib/main.h"
 
 int main (int argc, char * argv[]) {
     google::InitGoogleLogging (argv[0]);
 
     LOG (INFO) << "Start Running";
 
-    benchmark ();
+//    benchmark ();
+    Main();
 
     LOG (INFO) << "Stop Running";
 }

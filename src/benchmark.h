@@ -1,7 +1,7 @@
 #ifndef CONCURRENT_BENCHMARK_H
 #define CONCURRENT_BENCHMARK_H
 
-#include "config.h"
+#include "../config.h"
 
 #include "functions.h"
 #include "helpers.h"

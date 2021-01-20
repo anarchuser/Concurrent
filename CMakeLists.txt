@@ -5,11 +5,11 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_COMPILER g++)
 
 set(CMAKE_REQUIRED_LIBRARIES "-lglog -pthread")
-set(CMAKE_CXX_FLAGS "-fconcepts")
+set(CMAKE_CXX_FLAGS "-fconcepts -fcoroutines")
 
 file(GLOB_RECURSE SRCS ${PROJECT_SOURCE_DIR}/src/*)
 file(GLOB_RECURSE LIBS ${PROJECT_SOURCE_DIR}/lib/*/*.c*)
-add_executable(Concurrent src/main.cpp ${SRCS} ${LIBS})
+add_executable(Concurrent src/main.cpp config.h ${SRCS} ${LIBS})
 
 find_package(Threads REQUIRED)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
