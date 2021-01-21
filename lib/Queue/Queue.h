@@ -17,12 +17,12 @@ public:
     Queue() = default;
     ~Queue() { flush(); }
 
-    void push (T item) {
+    virtual void push (T item) {
         back = new Container <T> (std::move (item), back, nullptr);
         if (empty()) front = back;
         ++count;
     }
-    T pop () {
+    virtual T pop () {
         if (empty()) THROW (std::logic_error ("Cannot pop elements from empty queue!"));
         auto tmp = front;
         front = front->next;
@@ -35,8 +35,8 @@ public:
     void flush() {
         while (count) pop();
     }
-    bool empty () const { return !count; }
-    std::size_t size () const { return  count; }
+    virtual bool empty () const { return !count; }
+    virtual std::size_t size () const { return  count; }
 
     std::string toString () const {
         std::stringstream ss;

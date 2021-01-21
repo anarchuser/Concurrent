@@ -8,7 +8,7 @@ set(CMAKE_REQUIRED_LIBRARIES "-lglog -pthread")
 set(CMAKE_CXX_FLAGS "-fconcepts -fcoroutines")
 
 file(GLOB_RECURSE SRCS ${PROJECT_SOURCE_DIR}/src/*)
-file(GLOB_RECURSE LIBS ${PROJECT_SOURCE_DIR}/lib/*/*)
+file(GLOB_RECURSE LIBS ${PROJECT_SOURCE_DIR}/lib/*)
 add_executable(Concurrent src/main.cpp config.h ${SRCS} ${LIBS})
 
 find_package(Threads REQUIRED)

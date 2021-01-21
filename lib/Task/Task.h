@@ -4,6 +4,7 @@
 #include "ITask.h"
 
 #include <functional>
+#include <string>
 
 class Task: ITask {
 public:
@@ -19,6 +20,12 @@ public:
         return done;
     }
 
+    std::string toString () const override {
+        std::stringstream ss;
+        ss << "T: " << (done) ? "done" : (run) ? "running" : "idle";
+        return ss.str();
+    }
+
 private:
     std::function <void()> task;
 
@@ -26,6 +33,9 @@ private:
     bool done = false;
 };
 
+std::ostream & operator << (std::ostream & os, Task const & task) {
+    return os << task.toString();
+}
 
 #endif //CONCURRENT_TASK_H
 
