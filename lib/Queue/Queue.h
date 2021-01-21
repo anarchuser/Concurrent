@@ -14,6 +14,7 @@
 template <Streamable T>
 struct Queue {
 public:
+    Queue() = default;
     ~Queue() { flush(); }
 
     void push (T item) {

@@ -12,7 +12,8 @@ public:
     void operator () () override {
         if (run) return await();
         run = true;
-        return task();
+        task();
+        done = true;
     }
     bool operator ! () const override {
         return done;
