@@ -11,7 +11,7 @@ class Task: ITask {
 public:
     const int ID = ID_counter++;
 
-    explicit Task (std::function <void()> task): task {std::move (task)} { ++ID_counter; }
+    explicit Task (std::function <void()> task): task {std::move (task)} {}
 
     virtual void operator () () override {
         if (run) return await();

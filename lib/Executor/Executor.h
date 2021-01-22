@@ -6,14 +6,15 @@
 template <Runnable T>
 class Executor: protected Queue <T> {
 public:
-    Executor (): Queue<T>() {};
+    Executor (std::size_t capacity = 0): Queue<T>(), capacity {capacity} {};
     ~Executor () {
         flush ();
     }
 
     void schedule (T const & item) {
         Queue <T>::push (item);
-        Queue <T>::pop ()();
+        if (size() > capacity)
+            Queue <T>::pop ()();
     }
 
     void flush () { while (!empty()) Queue <T>::pop ()(); }
@@ -25,6 +26,9 @@ public:
         ss << "Executor - tasks left: " << size();
         return ss.str();
     }
+
+private:
+    std::size_t capacity;
 };
 
 #endif //CONCURRENT_EXECUTOR_H

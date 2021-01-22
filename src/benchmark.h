@@ -4,6 +4,8 @@
 #include "../config.h"
 
 #include "../lib/helper.h"
+#include "../lib/Executor/Executor.h"
+#include "../lib/Task/TimedTask.h"
 
 #include "functions.h"
 #include "time.h"
@@ -12,20 +14,21 @@
 #include <iostream>
 
 void benchmark () {
+    Executor <TimedTask> executor (MAX_ITEMS);
+
     auto total = TIME (
             /* Fibonacci */
-            auto fib_time = TIME (
+            auto fib = TIME (
                     for (int x = MAX_FIB - ITERATIONS + 1; x <= MAX_FIB; ++x) {
-                        std::cout << "fibonacci\t" << x << "\t" << TIME (fibonacci (x)) << std::endl;
+                        executor.schedule (TimedTask ([x] { fibonacci (x); }));
                     });
-            std::cout << "fibonacci\tΣ\t" << fib_time << std::endl;
+            LOG (INFO) << "fibonacci\tΣ\t" << fib;
 
             /* Sleep / Counter */
             auto sleep = TIME (
                     for (int x = 0; x < ITERATIONS; x++)
-                        std::cout << "sleep\t" << x << "\t" << TIME (
-                                count_to (5000)) << std::endl;);
-            std::cout << "sleep\tΣ\t" << sleep << std::endl;
+                        executor.schedule (TimedTask ([] {count_to (SLEEP_IN_MS)})););
+            LOG (INFO) << "sleep\tΣ\t" << sleep;
     );
     std::cout << "total\tΣ\t" << total << std::endl;
 }

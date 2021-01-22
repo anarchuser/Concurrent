@@ -20,8 +20,11 @@ std::string const STR = std::string();
 }; true
 #endif
 
+#define MAX_ITEMS 10
 #define ITERATIONS 20
+
 #define MAX_FIB 50
+#define SLEEP_IN_MS 5000
 
 #endif //CONCURRENT_CONFIG_H
 

@@ -16,7 +16,7 @@ void test();
 
 template <typename T, typename R>
 std::ostream & operator << (std::ostream & os, std::chrono::duration <T, R> duration) {
-    return os << std::chrono::duration_cast <std::chrono::microseconds> (duration).count() << " μs";
+    return os << std::chrono::duration_cast <std::chrono::nanoseconds> (duration).count() << " ns";
 }
 std::ostream & operator << (std::ostream & os, std::chrono::time_point <std::chrono::high_resolution_clock> const & time);
 

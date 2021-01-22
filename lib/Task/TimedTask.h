@@ -12,17 +12,17 @@ class TimedTask: public Task {
 public:
     TimedTask (std::function <void()> task): Task (task), ctor {std::chrono::high_resolution_clock::now()} {}
     ~TimedTask () {
-        end = std::chrono::high_resolution_clock::now();
+        dtor = std::chrono::high_resolution_clock::now();
         LOG (INFO) <<
-                "Task #"    << Task::ID <<
-                "Thread #"  << std::this_thread::get_id() <<
-                "\tctor "   << ctor     <<
-                "\tstart "  << start    <<
-                "\tend "    << end      <<
-                "\tdtor "   << dtor     <<
-                "\tidle "   << (start - ctor)  <<
-                "\ttime "   << (end   - start) <<
-                "\tlinger " << (dtor  - end);
+                "Task #"     << Task::ID <<
+                " Thread #" << std::this_thread::get_id() <<
+                " ctor "    << ctor     <<
+                " start "   << start    <<
+                " end "     << end      <<
+                " dtor "    << dtor     <<
+                " idle "    << (start - ctor)  <<
+                " work "    << (end   - start) <<
+                " linger "  << (dtor  - end);
     }
 
     virtual void operator () () override {
