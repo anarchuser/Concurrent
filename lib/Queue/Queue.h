@@ -1,10 +1,10 @@
 #ifndef CONCURRENT_QUEUE_H
 #define CONCURRENT_QUEUE_H
 
+#include "../../config.h"
+
 #include "Container/Container.h"
 #include "../helper.h"
-
-#include "../../config.h"
 
 #include <sstream>
 #include <vector>
@@ -32,13 +32,11 @@ public:
         delete tmp;
         return std::move (item);
     }
-    void flush() {
-        while (count) pop();
-    }
+    virtual void flush() { while (count) pop(); }
     virtual bool empty () const { return !count; }
     virtual std::size_t size () const { return  count; }
 
-    std::string toString () const {
+    virtual std::string toString () const {
         std::stringstream ss;
         Container <T> * trav = front;
         while (trav) {

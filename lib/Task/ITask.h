@@ -5,6 +5,8 @@
 #include <thread>
 
 struct ITask {
+//    virtual ~ITask() = 0;
+
     virtual void operator () () = 0;
     virtual bool operator ! () const = 0;
     virtual std::string toString () const = 0;
@@ -17,6 +19,8 @@ struct ITask {
 std::ostream & operator << (std::ostream & os, ITask const & task) {
     return os << task.toString();
 }
+
+//ITask::~ITask() = default;
 
 #endif //CONCURRENT_ITASK_H
 

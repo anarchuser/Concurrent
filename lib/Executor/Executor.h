@@ -2,22 +2,28 @@
 #define CONCURRENT_EXECUTOR_H
 
 #include "../Queue/Queue.h"
-#include "../Task/Task.h"
 
-class Executor: public Queue <Task> {
+template <Runnable T>
+class Executor: protected Queue <T> {
 public:
-    void schedule (Task item) {
-        push (std::move (item));
+    Executor (): Queue<T>() {};
+    ~Executor () {
+        flush ();
     }
 
-private:
-    virtual void push (Task item) override {
-        Queue::push (std::move (item));
-        pop ()();
+    void schedule (T const & item) {
+        Queue <T>::push (item);
+        Queue <T>::pop ()();
     }
 
-    virtual Task pop() override {
-        return Queue::pop();
+    void flush () { while (!empty()) Queue <T>::pop ()(); }
+    [[nodiscard]] bool empty () const { return Queue <T>::empty(); }
+    [[nodiscard]] std::size_t size () const { return Queue <T>::size(); }
+
+    [[nodiscard]] std::string toString () const {
+        std::stringstream ss;
+        ss << "Executor - tasks left: " << size();
+        return ss.str();
     }
 };
 
