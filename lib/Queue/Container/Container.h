@@ -26,9 +26,7 @@ public:
 
     std::unique_ptr <T> unwrap() {
         auto tmp = std::move (item);
-        LOG (WARNING) << "Deleting Container...";
         this->~Container();
-        LOG (WARNING) << "Deleted Container!";
         return tmp;
     }
 

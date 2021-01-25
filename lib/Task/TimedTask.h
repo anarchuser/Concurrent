@@ -50,14 +50,12 @@ public:
     }
 
     virtual void operator () () override {
-        LOG (INFO) << "Task #" << ID << " is being executed...";
         if (run) return await();
         run = true;
         start = std::chrono::high_resolution_clock::now();
         (* task) ();
         done = true;
         end = std::chrono::high_resolution_clock::now();
-        LOG (INFO) << "Task #" << ID << " finished execution";
     }
 
 private:
