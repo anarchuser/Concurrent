@@ -27,6 +27,7 @@ public:
     void flush () {
         while (!empty ()) execute();
     }
+    [[nodiscard]] bool operator ! () const { return empty(); }
     [[nodiscard]] bool empty () const { return queue.empty (); }
     [[nodiscard]] std::size_t size () const { return queue.size (); }
 

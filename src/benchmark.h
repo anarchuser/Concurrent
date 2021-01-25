@@ -29,6 +29,8 @@ void benchmark () {
     );
     executor.flush();
     std::cout << "total\tΣ\t" << total << std::endl;
+
+    if (!!executor) THROW (std::logic_error ("Queue should've been empty!"));
 }
 
 #endif //CONCURRENT_BENCHMARK_H
