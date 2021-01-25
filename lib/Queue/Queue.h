@@ -14,25 +14,27 @@
 template <Streamable T>
 struct Queue {
 public:
-    Queue() = default;
-    ~Queue() { flush(); }
+    Queue () = default;
+    Queue (Queue const & other) = delete;
+    Queue (Queue && other) = delete;
+    ~Queue () { flush(); }
 
-    virtual void push (T item) {
+    virtual void push (std::unique_ptr <T> item) {
         back = new Container <T> (std::move (item), back, nullptr);
         if (empty()) front = back;
         ++count;
     }
-    virtual T pop () {
-        if (empty()) THROW (std::logic_error ("Cannot pop elements from empty queue!"));
+    virtual std::unique_ptr <T> pop () {
+        if (empty ()) THROW (std::logic_error ("Cannot pop elements from empty queue!"));
         auto tmp = front;
         front = front->next;
         if (count <= 1) back = front;
-        T item = * tmp->reap();
+        auto item = tmp->unwrap();
         --count;
         delete tmp;
         return std::move (item);
     }
-    virtual void flush() { while (count) pop(); }
+    virtual void flush () { while (count) pop (); }
     virtual bool empty () const { return !count; }
     virtual std::size_t size () const { return  count; }
 
@@ -57,7 +59,7 @@ private:
 
 template <Streamable T>
 std::ostream & operator << (std::ostream & os, Queue<T> const & queue) {
-    return os << queue.toString();
+    return os << queue.toString ();
 }
 
 #endif //CONCURRENT_QUEUE_H

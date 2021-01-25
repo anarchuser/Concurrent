@@ -5,44 +5,30 @@
 
 #include <atomic>
 #include <functional>
-#include <string>
 
-class Task: ITask {
+class Task: public ITask {
 public:
-    const int ID = ID_counter++;
+    explicit Task (std::function <void()> && task): task {std::forward <std::function <void()>> (task)} {}
+    Task (Task const & other) = delete;
+    Task (Task && other) { * this = std::move (other); }
 
-    explicit Task (std::function <void()> task): task {std::move (task)} {}
+    Task & operator = (Task && other) {
+        task = std::move (other.task);
+        run = other.run;
+        done = other.done;
+        return * this;
+    }
 
-    virtual void operator () () override {
+    void operator () () override {
         if (run) return await();
         run = true;
         task();
         done = true;
     }
-    bool operator ! () const override {
-        return done;
-    }
-
-    std::string toString () const override {
-        std::stringstream ss;
-        ss << "T: " << ((done) ? "done" : (run) ? "running" : "idle");
-        return ss.str();
-    }
 
 private:
-    static std::atomic <int> ID_counter;
-
     std::function <void()> task;
-
-    bool run = false;
-    bool done = false;
 };
-
-std::atomic <int> Task::ID_counter = 0;
-
-std::ostream & operator << (std::ostream & os, Task const & task) {
-    return os << task.toString();
-}
 
 #endif //CONCURRENT_TASK_H
 

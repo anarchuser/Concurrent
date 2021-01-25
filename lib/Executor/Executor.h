@@ -3,23 +3,32 @@
 
 #include "../Queue/Queue.h"
 
-template <Runnable T>
-class Executor: protected Queue <T> {
+#include <thread>
+
+template <typename T>
+requires Streamable <T> && Runnable <T>
+class Executor {
 public:
-    Executor (std::size_t capacity = 0): Queue<T>(), capacity {capacity} {};
+    Executor (std::size_t capacity = 0): capacity {capacity} {};
     ~Executor () {
         flush ();
     }
 
-    void schedule (T const & item) {
-        Queue <T>::push (item);
+    void schedule (std::unique_ptr <T> item) {
+        queue.push (std::move (item));
         if (size() > capacity)
-            Queue <T>::pop ()();
+            execute();
     }
 
-    void flush () { while (!empty()) Queue <T>::pop ()(); }
-    [[nodiscard]] bool empty () const { return Queue <T>::empty(); }
-    [[nodiscard]] std::size_t size () const { return Queue <T>::size(); }
+    void execute () {
+        (* queue.pop())();
+    }
+
+    void flush () {
+        while (!empty ()) execute();
+    }
+    [[nodiscard]] bool empty () const { return queue.empty (); }
+    [[nodiscard]] std::size_t size () const { return queue.size (); }
 
     [[nodiscard]] std::string toString () const {
         std::stringstream ss;
@@ -29,6 +38,8 @@ public:
 
 private:
     std::size_t capacity;
+
+    Queue <T> queue;
 };
 
 #endif //CONCURRENT_EXECUTOR_H

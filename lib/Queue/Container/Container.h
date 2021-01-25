@@ -12,9 +12,9 @@ public:
     Container <T> * prev = nullptr;  // Points to element added most previously
     Container <T> * next = nullptr;  // Points to element added afterwards
 
-    explicit Container (T item): Container (item, nullptr, nullptr) {}
-    Container (T item, Container <T> * prev, Container <T> * next):
-            item {std::make_unique <T> (item)}, prev {prev}, next {next} {
+    explicit Container (std::unique_ptr <T> item): Container (std::move <T> (item), nullptr, nullptr) {}
+    Container (std::unique_ptr <T> item, Container <T> * prev, Container <T> * next): prev {prev}, next {next} {
+        this->item.swap (item);
         if (prev) prev->next = this;
         if (next) next->prev = this;
     }
@@ -24,8 +24,12 @@ public:
         if (next && next->prev == this) next->prev = prev;
     }
 
-    std::unique_ptr <T> reap() {
-        return std::move (item);
+    std::unique_ptr <T> unwrap() {
+        auto tmp = std::move (item);
+        LOG (WARNING) << "Deleting Container...";
+        this->~Container();
+        LOG (WARNING) << "Deleted Container!";
+        return tmp;
     }
 
     T const & peak() const {

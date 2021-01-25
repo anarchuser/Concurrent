@@ -18,18 +18,16 @@ void benchmark () {
 
     auto total = TIME (
             /* Fibonacci */
-            auto fib = TIME (
-                    for (int x = MAX_FIB - ITERATIONS + 1; x <= MAX_FIB; ++x) {
-                        executor.schedule (TimedTask ([x] { fibonacci (x); }));
-                    });
+            auto fib = TIME (for (int x = MAX_FIB - ITERATIONS + 1; x <= MAX_FIB; ++x)
+                        executor.schedule (std::make_unique <TimedTask> ([x] { fibonacci (x); })););
             LOG (INFO) << "fibonacci\tΣ\t" << fib;
 
             /* Sleep / Counter */
-            auto sleep = TIME (
-                    for (int x = 0; x < ITERATIONS; x++)
-                        executor.schedule (TimedTask ([] {count_to (SLEEP_IN_MS)})););
+            auto sleep = TIME (for (int x = 0; x < ITERATIONS; x++)
+                        executor.schedule (std::make_unique <TimedTask> ([] { count_to (SLEEP_IN_MS); })););
             LOG (INFO) << "sleep\tΣ\t" << sleep;
     );
+    executor.flush();
     std::cout << "total\tΣ\t" << total << std::endl;
 }
 
