@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_COMPILER g++)
 
 set(CMAKE_REQUIRED_LIBRARIES "-lglog -pthread")
-set(CMAKE_CXX_FLAGS "-fconcepts -fcoroutines")
+set(CMAKE_CXX_FLAGS "-fconcepts -fcoroutines -pthread")
 
 file(GLOB_RECURSE SRCS ${PROJECT_SOURCE_DIR}/src/*)
 file(GLOB_RECURSE LIBS ${PROJECT_SOURCE_DIR}/lib/*)

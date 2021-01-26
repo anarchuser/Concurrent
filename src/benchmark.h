@@ -3,32 +3,34 @@
 
 #include "../config.h"
 
-#include "../lib/Task/Task.h"
+#include "../lib/helper.h"
+#include "../lib/Executor/Executor.h"
+#include "../lib/Task/TimedTask.h"
 
 #include "functions.h"
-#include "helpers.h"
 #include "time.h"
 
 #include <chrono>
 #include <iostream>
 
 void benchmark () {
+    Executor <TimedTask> executor (MAX_ITEMS);
+
     auto total = TIME (
             /* Fibonacci */
-            auto fib_time = TIME (
-                    for (int x = MAX_FIB - ITERATIONS + 1; x <= MAX_FIB; ++x) {
-                        std::cout << "fibonacci\t" << x << "\t" << TIME (fibonacci (x)) << std::endl;
-                    });
-            std::cout << "fibonacci\tΣ\t" << fib_time << std::endl;
+            auto fib = TIME (for (int x = MAX_FIB - ITERATIONS + 1; x <= MAX_FIB; ++x)
+                        executor.schedule (std::make_unique <TimedTask> ([x] { fibonacci (x); })););
+            LOG (INFO) << "fibonacci\tΣ\t" << fib;
 
             /* Sleep / Counter */
-            auto sleep = TIME (
-                    for (int x = 0; x < ITERATIONS; x++)
-                        std::cout << "sleep\t" << x << "\t" << TIME (
-                                count_to (5000)) << std::endl;);
-            std::cout << "sleep\tΣ\t" << sleep << std::endl;
+            auto sleep = TIME (for (int x = 0; x < ITERATIONS; x++)
+                        executor.schedule (std::make_unique <TimedTask> ([] { count_to (SLEEP_IN_MS); })););
+            LOG (INFO) << "sleep\tΣ\t" << sleep;
     );
+    executor.flush();
     std::cout << "total\tΣ\t" << total << std::endl;
+
+    if (!!executor) THROW (std::logic_error ("Queue should've been empty!"));
 }
 
 #endif //CONCURRENT_BENCHMARK_H

@@ -2,23 +2,45 @@
 #define CONCURRENT_EXECUTOR_H
 
 #include "../Queue/Queue.h"
-#include "../Task/Task.h"
 
-class Executor: public Queue <Task> {
+#include <thread>
+
+template <typename T>
+requires Streamable <T> && Runnable <T>
+class Executor {
 public:
-    void schedule (Task item) {
-        push (std::move (item));
+    Executor (std::size_t capacity = 0): capacity {capacity} {};
+    ~Executor () {
+        flush ();
+    }
+
+    void schedule (std::unique_ptr <T> item) {
+        queue.push (std::move (item));
+        if (size() > capacity)
+            execute();
+    }
+
+    void execute () {
+        (* queue.pop())();
+    }
+
+    void flush () {
+        while (!empty ()) execute();
+    }
+    [[nodiscard]] bool operator ! () const { return empty(); }
+    [[nodiscard]] bool empty () const { return queue.empty (); }
+    [[nodiscard]] std::size_t size () const { return queue.size (); }
+
+    [[nodiscard]] std::string toString () const {
+        std::stringstream ss;
+        ss << "Executor - tasks left: " << size();
+        return ss.str();
     }
 
 private:
-    virtual void push (Task item) override {
-        Queue::push (std::move (item));
-        pop ()();
-    }
+    std::size_t capacity;
 
-    virtual Task pop() override {
-        return Queue::pop();
-    }
+    Queue <T> queue;
 };
 
 #endif //CONCURRENT_EXECUTOR_H

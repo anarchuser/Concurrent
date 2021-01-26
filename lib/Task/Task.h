@@ -3,12 +3,21 @@
 
 #include "ITask.h"
 
+#include <atomic>
 #include <functional>
-#include <string>
 
-class Task: ITask {
+class Task: public ITask {
 public:
-    explicit Task (std::function <void()> task): task {std::move (task)} {}
+    explicit Task (std::function <void()> && task): task {std::forward <std::function <void()>> (task)} {}
+    Task (Task const & other) = delete;
+    Task (Task && other) { * this = std::move (other); }
+
+    Task & operator = (Task && other) {
+        task = std::move (other.task);
+        run = other.run;
+        done = other.done;
+        return * this;
+    }
 
     void operator () () override {
         if (run) return await();
@@ -16,26 +25,10 @@ public:
         task();
         done = true;
     }
-    bool operator ! () const override {
-        return done;
-    }
-
-    std::string toString () const override {
-        std::stringstream ss;
-        ss << "T: " << (done) ? "done" : (run) ? "running" : "idle";
-        return ss.str();
-    }
 
 private:
     std::function <void()> task;
-
-    bool run = false;
-    bool done = false;
 };
-
-std::ostream & operator << (std::ostream & os, Task const & task) {
-    return os << task.toString();
-}
 
 #endif //CONCURRENT_TASK_H
 
