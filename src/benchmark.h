@@ -29,9 +29,9 @@ void benchmark () {
 
             executor.flush();
     );
+    STD_OSTREAM << "idle\tΣ\t" << std::chrono::nanoseconds (TimedTask::accumulated_idle) << std::endl;
+    STD_OSTREAM << "work\tΣ\t" << std::chrono::nanoseconds (TimedTask::accumulated_work) << std::endl;
     STD_OSTREAM << "total\tΣ\t" << total << std::endl;
-
-    if (!!executor) THROW (std::logic_error ("Queue should've been empty!"));
 }
 
 #endif //CONCURRENT_BENCHMARK_H
