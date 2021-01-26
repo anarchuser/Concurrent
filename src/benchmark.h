@@ -20,12 +20,12 @@ void benchmark () {
             /* Fibonacci */
             auto fib = TIME (for (int x = MAX_FIB - ITERATIONS + 1; x <= MAX_FIB; ++x)
                         executor.schedule (std::make_unique <TimedTask> ([x] { fibonacci (x); })););
-            STD_OSTREAM << "fibonacci\tΣ\t" << fib << std::endl;
+//            STD_OSTREAM << "fibonacci\tΣ\t" << fib << std::endl;
 
             /* Sleep / Counter */
             auto sleep = TIME (for (int x = 0; x < ITERATIONS; x++)
                         executor.schedule (std::make_unique <TimedTask> ([] { count_to (SLEEP_IN_MS); })););
-            STD_OSTREAM << "sleep\tΣ\t" << sleep << std::endl;
+//            STD_OSTREAM << "sleep\tΣ\t" << sleep << std::endl;
 
             executor.flush();
     );

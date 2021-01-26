@@ -16,6 +16,12 @@ struct Worker {
              slave {Slave (shouldStop, std::move (pop), std::move (empty))} {}
     ~Worker() { join(); }
 
+    Worker & operator = (Worker && other) noexcept {
+        slave = std::move (other.slave);
+        shouldStop = std::move (other.shouldStop);
+        return * this;
+    }
+
     void join() {
         shouldStop = true;
         slave.join();

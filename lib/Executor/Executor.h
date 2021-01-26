@@ -4,17 +4,24 @@
 #include "../Queue/Queue.h"
 #include "Worker/Worker.h"
 
+#include <memory>
 #include <thread>
 
 template <typename T>
 requires Streamable <T> && Runnable <T>
 class Executor {
 public:
-    Executor(): worker (std::function <std::unique_ptr <T>()> ([this]() -> std::unique_ptr <T> { return this->pop(); }),
-                        std::function <bool()> ([this]() -> bool { return this->empty(); })) {}
+    Executor() {
+        auto _pop = std::function <std::unique_ptr <T>()> ([this]() -> std::unique_ptr <T> { return this->pop(); });
+        auto _empty = std::function <bool()> ([this]() -> bool { return this->empty(); });
+
+        for (std::size_t worker = 0; worker < AVAILABLE_THREADS; ++worker)
+            workers.template emplace_back (std::make_unique <Worker <T>> (_pop, _empty));
+    }
     ~Executor() {
         flush();
-        worker.join();
+        for (auto & worker : workers)
+            worker->join();
     }
 
     void schedule (std::unique_ptr <T> item) {
@@ -42,7 +49,7 @@ public:
     }
 
 private:
-    Worker <T> worker;
+    std::vector <std::unique_ptr <Worker <T>>> workers;
     Queue <T> queue;
 };
 
