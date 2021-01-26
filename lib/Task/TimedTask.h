@@ -22,7 +22,7 @@ public:
     ~TimedTask () {
         if (!done) return;
         dtor = std::chrono::high_resolution_clock::now();
-        LOG (INFO) <<
+        STD_OSTREAM <<
                 "Task #"    << ID <<
                 " Pointer " << this <<
                 " Thread #" << std::this_thread::get_id() <<
@@ -33,12 +33,10 @@ public:
                 " idle "    << (start - ctor)  <<
                 " work "    << (end   - start) <<
                 " linger "  << (dtor  - end)   <<
-                " total "   << (dtor  - ctor);
+                " total "   << (dtor  - ctor) << std::endl;
     }
 
     TimedTask & operator = (TimedTask && other) {
-        LOG (WARNING) << "Move Task #" << other.ID << " to Task #" << ID;
-
         task = std::move (other.task);
         run = other.run;
         done = other.done;

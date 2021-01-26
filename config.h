@@ -20,6 +20,8 @@ std::string const STR = std::string();
 }; true
 #endif
 
+#define STD_OSTREAM std::cout
+
 #define MAX_ITEMS 10
 #define ITERATIONS 20
 
