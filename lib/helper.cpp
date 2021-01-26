@@ -5,5 +5,4 @@ std::ostream & operator << (std::ostream & os, std::chrono::time_point <std::chr
     return os << std::put_time (std::localtime (& time_t), "%T");
 }
 
-
 /* Copyright (C) 2020 Aaron Alef */
