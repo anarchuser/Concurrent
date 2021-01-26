@@ -3,5 +3,6 @@
 
 ### Versions
 0. Default sequential execution
+1. Asynchronous but single-threaded execution
 
 Copyright (C) 2021 Aaron Alef <aaron.alef@code.berlin> [@anarchuser](https://github.com/anarchuser)
