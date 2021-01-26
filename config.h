@@ -22,6 +22,8 @@ std::string const STR = std::string();
 
 #define STD_OSTREAM std::cout
 
+#define AVAILABLE_THREADS 10
+
 #define MAX_ITEMS 10
 #define ITERATIONS 20
 

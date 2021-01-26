@@ -2,6 +2,7 @@
 #define CONCURRENT_EXECUTOR_H
 
 #include "../Queue/Queue.h"
+#include "Worker/Worker.h"
 
 #include <thread>
 
@@ -9,23 +10,27 @@ template <typename T>
 requires Streamable <T> && Runnable <T>
 class Executor {
 public:
-    ~Executor () { flush (); }
+    Executor(): worker (std::function <std::unique_ptr <T>()> ([this]() -> std::unique_ptr <T> { return this->pop(); }),
+                        std::function <bool()> ([this]() -> bool { return this->empty(); })) {}
+    ~Executor() {
+        flush();
+        worker.join();
+    }
 
     void schedule (std::unique_ptr <T> item) {
         queue.push (std::move (item));
-        execute();
+    }
+    std::unique_ptr <T> pop () {
+        if (empty()) LOG (ERROR) << "Tried to pop elements from empty queue!";
+        return queue.pop();
+    }
+    void flush() const {
+        await();
+    }
+    void await() const {
+        while (!empty()) std::this_thread::yield();
     }
 
-    void execute () {
-        threads.template emplace_back(std::move (* queue.pop()));
-    }
-
-    void flush () {
-        while (!empty ()) execute();
-        for (auto & thread : threads)
-            thread.join();
-        threads.clear();
-    }
     [[nodiscard]] bool operator ! () const { return empty(); }
     [[nodiscard]] bool empty () const { return queue.empty (); }
     [[nodiscard]] std::size_t size () const { return queue.size (); }
@@ -37,8 +42,7 @@ public:
     }
 
 private:
-    std::vector <std::thread> threads;
-
+    Worker <T> worker;
     Queue <T> queue;
 };
 
