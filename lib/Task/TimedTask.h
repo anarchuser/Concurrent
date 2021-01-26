@@ -23,17 +23,17 @@ public:
         if (!done) return;
         dtor = std::chrono::high_resolution_clock::now();
         STD_OSTREAM <<
-                "Task #"    << ID <<
-                " Pointer " << this <<
-                " Thread #" << std::this_thread::get_id() <<
-                " ctor "    << ctor     <<
-                " start "   << start    <<
-                " end "     << end      <<
-                " dtor "    << dtor     <<
-                " idle "    << (start - ctor)  <<
-                " work "    << (end   - start) <<
-                " linger "  << (dtor  - end)   <<
-                " total "   << (dtor  - ctor) << std::endl;
+                "Task ID "    << ID <<
+                "\tPointer " << this <<
+                "\tThread #" << std::this_thread::get_id() <<
+                "\tctor "    << ctor     <<
+                "\tstart "   << start    <<
+                "\tend "     << end      <<
+                "\tdtor "    << dtor     <<
+                "\tidle "    << (start - ctor)  <<
+                "\twork "    << (end   - start) <<
+                "\tlinger "  << (dtor  - end)   <<
+                "\ttotal "   << (dtor  - ctor) << std::endl;
     }
 
     TimedTask & operator = (TimedTask && other) {
