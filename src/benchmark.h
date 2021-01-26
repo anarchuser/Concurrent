@@ -14,21 +14,22 @@
 #include <iostream>
 
 void benchmark () {
-    Executor <TimedTask> executor (MAX_ITEMS);
+    Executor <TimedTask> executor;
 
     auto total = TIME (
             /* Fibonacci */
             auto fib = TIME (for (int x = MAX_FIB - ITERATIONS + 1; x <= MAX_FIB; ++x)
                         executor.schedule (std::make_unique <TimedTask> ([x] { fibonacci (x); })););
-            LOG (INFO) << "fibonacci\tΣ\t" << fib;
+            STD_OSTREAM << "fibonacci\tΣ\t" << fib << std::endl;
 
             /* Sleep / Counter */
             auto sleep = TIME (for (int x = 0; x < ITERATIONS; x++)
                         executor.schedule (std::make_unique <TimedTask> ([] { count_to (SLEEP_IN_MS); })););
-            LOG (INFO) << "sleep\tΣ\t" << sleep;
+            STD_OSTREAM << "sleep\tΣ\t" << sleep << std::endl;
+
+            executor.flush();
     );
-    executor.flush();
-    std::cout << "total\tΣ\t" << total << std::endl;
+    STD_OSTREAM << "total\tΣ\t" << total << std::endl;
 
     if (!!executor) THROW (std::logic_error ("Queue should've been empty!"));
 }
