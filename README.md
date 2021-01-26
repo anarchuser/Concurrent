@@ -4,5 +4,6 @@
 ### Versions
 0. Default sequential execution
 1. Asynchronous but single-threaded execution
+2. Each task is executed on a newly spun thread
 
 Copyright (C) 2021 Aaron Alef <aaron.alef@code.berlin> [@anarchuser](https://github.com/anarchuser)
