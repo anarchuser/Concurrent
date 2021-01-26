@@ -9,23 +9,22 @@ template <typename T>
 requires Streamable <T> && Runnable <T>
 class Executor {
 public:
-    Executor (std::size_t capacity = 0): capacity {capacity} {};
-    ~Executor () {
-        flush ();
-    }
+    ~Executor () { flush (); }
 
     void schedule (std::unique_ptr <T> item) {
         queue.push (std::move (item));
-        if (size() > capacity)
-            execute();
+        execute();
     }
 
     void execute () {
-        (* queue.pop())();
+        threads.template emplace_back(std::move (* queue.pop()));
     }
 
     void flush () {
         while (!empty ()) execute();
+        for (auto & thread : threads)
+            thread.join();
+        threads.clear();
     }
     [[nodiscard]] bool operator ! () const { return empty(); }
     [[nodiscard]] bool empty () const { return queue.empty (); }
@@ -38,7 +37,7 @@ public:
     }
 
 private:
-    std::size_t capacity;
+    std::vector <std::thread> threads;
 
     Queue <T> queue;
 };
