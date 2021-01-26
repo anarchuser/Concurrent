@@ -22,6 +22,8 @@ public:
     ~TimedTask () {
         if (!done) return;
         dtor = std::chrono::high_resolution_clock::now();
+        accumulated_idle += (start - ctor).count();
+        accumulated_work += (end  - start).count();
         STD_OSTREAM <<
                 "Task ID "    << ID <<
                 "\tPointer " << this <<
@@ -56,11 +58,17 @@ public:
         end = std::chrono::high_resolution_clock::now();
     }
 
+    static std::atomic <std::size_t> accumulated_idle;
+    static std::atomic <std::size_t> accumulated_work;
+
 private:
     std::unique_ptr <std::function <void()>> task;
 
     std::chrono::time_point <std::chrono::high_resolution_clock> ctor, start, end, dtor;
 };
+
+std::atomic <std::size_t> TimedTask::accumulated_idle = 0;
+std::atomic <std::size_t> TimedTask::accumulated_work = 0;
 
 std::unique_ptr <TimedTask> timedTaskOf (std::function <void()> && task);
 
