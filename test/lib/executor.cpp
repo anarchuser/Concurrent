@@ -12,9 +12,6 @@ SCENARIO ("Executor basic I/O") {
     GIVEN ("A String executor and a list of strings") {
         Executor <TimedTask> executor;
 
-
-
-
         REQUIRE (executor.empty());
         WHEN ("I insert the strings into the executor") {
             CHECK_NOTHROW (executor.schedule (std::make_unique <TimedTask> ([] { LOG (INFO) << "task 1/3 successful"; })));

@@ -40,16 +40,19 @@ public:
     }
     /** Pops the oldest element from the queue. Returns empty pointer if empty. */
     std::unique_ptr <T> try_pop () {
-        std::lock_guard guard (mx);
+        std::unique_ptr <T> item;
+        {
+            std::lock_guard guard(mx);
 
-        if (empty ()) return nullptr;
+            if (empty()) return nullptr;
 
-        auto tmp = front;
-        front = front->next;
-        if (size() <= 1) back = front;
-        auto item = tmp->unwrap();
-        --count;
-        delete tmp;
+            auto tmp = front;
+            front = front->next;
+            if (size() <= 1) back = front;
+            item = tmp->unwrap();
+            --count;
+            delete tmp;
+        }
         return std::move (item);
     }
     void flush () {
