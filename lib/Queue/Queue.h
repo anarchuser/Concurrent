@@ -6,6 +6,8 @@
 #include "Container/Container.h"
 #include "../helper.h"
 
+#include <atomic>
+#include <mutex>
 #include <sstream>
 #include <vector>
 
@@ -19,24 +21,47 @@ public:
     Queue (Queue && other) = delete;
     ~Queue () { flush(); }
 
-    virtual void push (std::unique_ptr <T> item) {
-        back = new Container <T> (std::move (item), back, nullptr);
-        if (empty()) front = back;
+    void push (std::unique_ptr <T> item) {
+        auto tmp = new Container <T> (std::move (item));
+        {
+            std::lock_guard guard (mx);
+
+            tmp->prev = back;
+            if (empty()) front = tmp;
+            else back->next = tmp;
+            back = tmp;
+        }
         ++count;
     }
-    virtual std::unique_ptr <T> pop () {
-        if (empty ()) THROW (std::logic_error ("Cannot pop elements from empty queue!"));
-        auto tmp = front;
-        front = front->next;
-        if (count <= 1) back = front;
+    /** Pops the oldest element from the queue. Throws if empty. */
+    std::unique_ptr <T> pop () {
+        auto item = try_pop();
+        if (item) return item;
+        THROW (std::logic_error ("Cannot pop elements from empty queue!"));
+    }
+    /** Pops the oldest element from the queue. Returns empty pointer if empty. */
+    std::unique_ptr <T> try_pop () {
+        Container <T> * tmp;
+        {
+            std::lock_guard guard(mx);
+
+            if (empty()) return nullptr;
+            tmp = front;
+            front = front->next;
+            if (size() <= 2) back = front;
+            --count;
+        }
         auto item = tmp->unwrap();
-        --count;
         delete tmp;
         return std::move (item);
     }
-    virtual void flush () { while (count) pop (); }
-    virtual bool empty () const { return !count; }
-    virtual std::size_t size () const { return  count; }
+    void flush () {
+        while (try_pop());
+    }
+    bool empty () const {
+        return !back;
+    }
+    std::size_t size () const { return count; }
 
     virtual std::string toString () const {
         std::stringstream ss;
@@ -54,7 +79,9 @@ public:
 private:
     Container <T> * front = nullptr;  // Where elements are removed from
     Container <T> * back  = nullptr;  // Where elements are added to
-    std::size_t count = 0;
+    std::atomic <int> count = 0;
+
+    mutable std::mutex mx;
 };
 
 template <Streamable T>

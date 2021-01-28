@@ -12,8 +12,9 @@ public:
     Container <T> * prev = nullptr;  // Points to element added most previously
     Container <T> * next = nullptr;  // Points to element added afterwards
 
-    explicit Container (std::unique_ptr <T> item): Container (std::move <T> (item), nullptr, nullptr) {}
-    Container (std::unique_ptr <T> item, Container <T> * prev, Container <T> * next): prev {prev}, next {next} {
+    explicit Container (std::unique_ptr <T> && item):
+            Container (std::forward <std::unique_ptr <T>> (item), nullptr, nullptr) {}
+    Container (std::unique_ptr <T> && item, Container <T> * prev, Container <T> * next): prev {prev}, next {next} {
         this->item.swap (item);
         if (prev) prev->next = this;
         if (next) next->prev = this;
