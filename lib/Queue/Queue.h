@@ -34,7 +34,16 @@ public:
     }
     /** Pops the oldest element from the queue. Throws if empty. */
     std::unique_ptr <T> pop () {
-        if (empty ()) THROW (std::logic_error ("Cannot pop elements from empty queue!"));
+        auto item = try_pop();
+        if (item) return item;
+        THROW (std::logic_error ("Cannot pop elements from empty queue!"));
+    }
+    /** Pops the oldest element from the queue. Returns empty pointer if empty. */
+    std::unique_ptr <T> try_pop () {
+        std::lock_guard guard (mx);
+
+        if (empty ()) return nullptr;
+
         auto tmp = front;
         front = front->next;
         if (size() <= 1) back = front;
@@ -42,12 +51,6 @@ public:
         --count;
         delete tmp;
         return std::move (item);
-    }
-    /** Pops the oldest element from the queue. Returns empty pointer if empty. */
-    std::unique_ptr <T> try_pop () {
-        std::lock_guard guard (mx);
-
-        return empty() ? nullptr : pop();
     }
     void flush () {
         while (try_pop());
