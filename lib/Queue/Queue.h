@@ -52,8 +52,8 @@ public:
             if (size() <= 1) back = front;
             item = tmp->unwrap();
             --count;
-            delete tmp;
         }
+        delete tmp;
         return std::move (item);
     }
     void flush () {
