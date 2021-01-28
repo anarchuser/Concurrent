@@ -6,6 +6,7 @@
 #include "Container/Container.h"
 #include "../helper.h"
 
+#include <mutex>
 #include <sstream>
 #include <vector>
 
@@ -19,12 +20,15 @@ public:
     Queue (Queue && other) = delete;
     ~Queue () { flush(); }
 
-    virtual void push (std::unique_ptr <T> item) {
+    void push (std::unique_ptr <T> item) {
+        std::lock_guard guard (mx);
+
         back = new Container <T> (std::move (item), back, nullptr);
         if (empty()) front = back;
         ++count;
     }
-    virtual std::unique_ptr <T> pop () {
+    /** Pops the oldest element from the queue. Throws if empty. */
+    std::unique_ptr <T> pop () {
         if (empty ()) THROW (std::logic_error ("Cannot pop elements from empty queue!"));
         auto tmp = front;
         front = front->next;
@@ -34,9 +38,15 @@ public:
         delete tmp;
         return std::move (item);
     }
-    virtual void flush () { while (count) pop (); }
-    virtual bool empty () const { return !count; }
-    virtual std::size_t size () const { return  count; }
+    /** Pops the oldest element from the queue. Returns empty pointer if empty. */
+    std::unique_ptr <T> try_pop () {
+        std::lock_guard guard (mx);
+
+        return empty() ? nullptr : pop();
+    }
+    void flush () { while (try_pop()); }
+    bool empty () const { return !count; }
+    std::size_t size () const { return  count; }
 
     virtual std::string toString () const {
         std::stringstream ss;
@@ -55,6 +65,8 @@ private:
     Container <T> * front = nullptr;  // Where elements are removed from
     Container <T> * back  = nullptr;  // Where elements are added to
     std::size_t count = 0;
+
+    mutable std::mutex mx;
 };
 
 template <Streamable T>

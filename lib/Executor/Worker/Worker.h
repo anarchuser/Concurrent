@@ -11,9 +11,8 @@
 
 template <Runnable T>
 struct Worker {
-    Worker (std::function <std::unique_ptr <T>()> pop,
-                     std::function <bool()> empty):
-             slave {Slave (shouldStop, std::move (pop), std::move (empty))} {}
+    Worker (std::function <std::unique_ptr <T>()> pop):
+             slave {Slave (shouldStop, std::move (pop))} {}
     ~Worker() { join(); }
 
     Worker & operator = (Worker && other) noexcept {

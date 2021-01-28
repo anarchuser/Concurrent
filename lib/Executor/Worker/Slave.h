@@ -9,17 +9,14 @@
 
 template <Runnable T>
 struct Slave {
-    Slave (bool volatile const & stop,
-                    std::function <std::unique_ptr <T>()> pop,
-                    std::function <bool()> empty):
+    Slave (bool volatile const & stop, std::function <std::unique_ptr <T>()> pop):
             stop {stop},
-            pop {std::move (pop)},
-            empty {std::move (empty)} {}
+            pop {std::move (pop)} {}
 
     void operator () () {
         while (!stop) {
-            if (empty ()) std::this_thread::yield ();
-            else (* pop ())();
+            auto task = pop();
+            task ? (* task)() : std::this_thread::yield();
         }
     }
 
@@ -27,7 +24,6 @@ private:
     bool volatile const & stop;
 
     std::function <std::unique_ptr <T>()> pop;
-    std::function <bool()> const empty;
 };
 
 #endif //CONCURRENT_SLAVE_H

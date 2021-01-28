@@ -12,24 +12,15 @@ requires Streamable <T> && Runnable <T>
 class Executor {
 public:
     Executor() {
-        auto _pop = std::function <std::unique_ptr <T>()> ([this]() -> std::unique_ptr <T> { return this->pop(); });
-        auto _empty = std::function <bool()> ([this]() -> bool { return this->empty(); });
+        auto _pop = std::function <std::unique_ptr <T>()> ([this]() -> std::unique_ptr <T> { return this->try_pop(); });
 
         for (std::size_t worker = 0; worker < AVAILABLE_THREADS; ++worker)
-            workers.template emplace_back (std::make_unique <Worker <T>> (_pop, _empty));
+            workers.template emplace_back (std::make_unique <Worker <T>> (_pop));
     }
-    ~Executor() {
-        flush();
-        for (auto & worker : workers)
-            worker->join();
-    }
+    ~Executor() { await(); }
 
     void schedule (std::unique_ptr <T> item) {
         queue.push (std::move (item));
-    }
-    std::unique_ptr <T> pop () {
-        if (empty()) LOG (ERROR) << "Tried to pop elements from empty queue!";
-        return queue.pop();
     }
     void flush() const {
         await();
@@ -51,6 +42,9 @@ public:
 private:
     std::vector <std::unique_ptr <Worker <T>>> workers;
     Queue <T> queue;
+
+    std::unique_ptr <T> pop () { return queue.pop(); }
+    std::unique_ptr <T> try_pop () { return queue.try_pop(); }
 };
 
 #endif //CONCURRENT_EXECUTOR_H

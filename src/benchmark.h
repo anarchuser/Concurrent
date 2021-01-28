@@ -14,21 +14,24 @@
 #include <iostream>
 
 void benchmark () {
-    Executor <TimedTask> executor;
+    std::chrono::nanoseconds total;
+    {
+        Executor<TimedTask> executor;
 
-    auto total = TIME (
-            /* Fibonacci */
-            auto fib = TIME (for (int x = MAX_FIB - ITERATIONS + 1; x <= MAX_FIB; ++x)
-                        executor.schedule (std::make_unique <TimedTask> ([x] { fibonacci (x); })););
+        total = TIME (
+        /* Fibonacci */
+                auto fib = TIME(for (int x = MAX_FIB - ITERATIONS + 1; x <= MAX_FIB; ++x)
+            executor.schedule(std::make_unique<TimedTask>([x] { fibonacci(x); })););
 //            STD_OSTREAM << "fibonacci\tΣ\t" << fib << std::endl;
 
-            /* Sleep / Counter */
-            auto sleep = TIME (for (int x = 0; x < ITERATIONS; x++)
-                        executor.schedule (std::make_unique <TimedTask> ([] { count_to (SLEEP_IN_MS); })););
+                /* Sleep / Counter */
+                auto sleep = TIME (for (int x = 0; x < ITERATIONS; x++)
+                executor.schedule (std::make_unique <TimedTask> ([] { count_to (SLEEP_IN_MS); })););
 //            STD_OSTREAM << "sleep\tΣ\t" << sleep << std::endl;
 
-            executor.flush();
-    );
+                executor.flush();
+        );
+    }
     STD_OSTREAM << "idle\tΣ\t" << std::chrono::nanoseconds (TimedTask::accumulated_idle) << std::endl;
     STD_OSTREAM << "work\tΣ\t" << std::chrono::nanoseconds (TimedTask::accumulated_work) << std::endl;
     STD_OSTREAM << "total\tΣ\t" << total << std::endl;
