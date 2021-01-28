@@ -22,10 +22,14 @@ public:
     ~Queue () { flush(); }
 
     void push (std::unique_ptr <T> item) {
-        std::lock_guard guard(mx);
-
-        back = new Container <T> (std::move (item), back, nullptr);
-        if (empty()) front = back;
+        auto tmp = new Container <T> (std::move (item));
+        {
+            std::lock_guard guard (mx);
+            tmp->prev = back;
+            if (empty()) front = tmp;
+            else back->next = tmp;
+            back = tmp;
+        }
         ++count;
     }
     /** Pops the oldest element from the queue. Throws if empty. */
