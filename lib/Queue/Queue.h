@@ -6,6 +6,7 @@
 #include "Container/Container.h"
 #include "../helper.h"
 
+#include <atomic>
 #include <mutex>
 #include <sstream>
 #include <vector>
@@ -21,7 +22,7 @@ public:
     ~Queue () { flush(); }
 
     void push (std::unique_ptr <T> item) {
-        std::lock_guard guard (mx);
+        std::lock_guard guard(mx);
 
         back = new Container <T> (std::move (item), back, nullptr);
         if (empty()) front = back;
@@ -32,7 +33,7 @@ public:
         if (empty ()) THROW (std::logic_error ("Cannot pop elements from empty queue!"));
         auto tmp = front;
         front = front->next;
-        if (count <= 1) back = front;
+        if (size() <= 1) back = front;
         auto item = tmp->unwrap();
         --count;
         delete tmp;
@@ -44,9 +45,13 @@ public:
 
         return empty() ? nullptr : pop();
     }
-    void flush () { while (try_pop()); }
-    bool empty () const { return !count; }
-    std::size_t size () const { return  count; }
+    void flush () {
+        while (try_pop());
+    }
+    bool empty () const {
+        return !count;
+    }
+    std::size_t size () const { return count; }
 
     virtual std::string toString () const {
         std::stringstream ss;
@@ -64,7 +69,7 @@ public:
 private:
     Container <T> * front = nullptr;  // Where elements are removed from
     Container <T> * back  = nullptr;  // Where elements are added to
-    std::size_t count = 0;
+    std::atomic <std::size_t> count = 0;
 
     mutable std::mutex mx;
 };
