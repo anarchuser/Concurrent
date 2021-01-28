@@ -48,7 +48,7 @@ public:
 
             tmp = front;
             front = front->next;
-            if (size() <= 1) back = front;
+            if (size() <= 2) back = front;
             --count;
         }
         auto item = tmp->unwrap();
@@ -59,7 +59,7 @@ public:
         while (try_pop());
     }
     bool empty () const {
-        return !count;
+        return !back;
     }
     std::size_t size () const { return count; }
 
@@ -79,7 +79,7 @@ public:
 private:
     Container <T> * front = nullptr;  // Where elements are removed from
     Container <T> * back  = nullptr;  // Where elements are added to
-    std::atomic <std::size_t> count = 0;
+    std::atomic <int> count = 0;
 
     mutable std::mutex mx;
 };
