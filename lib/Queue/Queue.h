@@ -25,6 +25,7 @@ public:
         auto tmp = new Container <T> (std::move (item));
         {
             std::lock_guard guard (mx);
+
             tmp->prev = back;
             if (empty()) front = tmp;
             else back->next = tmp;
@@ -45,7 +46,6 @@ public:
             std::lock_guard guard(mx);
 
             if (empty()) return nullptr;
-
             tmp = front;
             front = front->next;
             if (size() <= 2) back = front;
