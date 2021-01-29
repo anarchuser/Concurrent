@@ -45,7 +45,7 @@ public:
     }
 
 private:
-    std::vector <std::unique_ptr <Worker <T>>> workers;
+    static std::vector <std::unique_ptr <Worker <T>>> workers;
 
     Worker <T> & next () {
         std::size_t min = -1;
@@ -60,9 +60,9 @@ private:
     }
 };
 
-//template <typename T>
-//requires Streamable <T> && Runnable <T>
-//std::vector <std::unique_ptr <Worker <T>>> Executor <T>::workers;
+template <typename T>
+requires Streamable <T> && Runnable <T>
+std::vector <std::unique_ptr <Worker <T>>> Executor <T>::workers = std::vector <std::unique_ptr <Worker <T>>>();
 
 #endif //CONCURRENT_EXECUTOR_H
 
