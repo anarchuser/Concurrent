@@ -18,7 +18,7 @@ SCENARIO ("Executor basic I/O") {
             CHECK_NOTHROW (executor.schedule (std::make_unique <TimedTask> ([] { LOG (INFO) << "task 2/3 successful"; })));
             CHECK_NOTHROW (executor.schedule (std::make_unique <TimedTask> ([] { LOG (INFO) << "task 3/3 successful"; })));
         }
-        CHECK_NOTHROW (executor.flush());
+        CHECK_NOTHROW (executor.await());
         REQUIRE (executor.empty());
     }
 }

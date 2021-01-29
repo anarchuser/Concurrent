@@ -22,9 +22,6 @@ public:
     void schedule (std::unique_ptr <T> item) {
         queue.push (std::move (item));
     }
-    void flush() const {
-        await();
-    }
     void await() const {
         while (!empty()) std::this_thread::yield();
     }
