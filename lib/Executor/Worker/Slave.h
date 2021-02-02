@@ -9,7 +9,7 @@
 
 template <Runnable T>
 struct Slave {
-    Slave (bool volatile const & stop, std::function <std::unique_ptr <T>()> pop):
+    Slave (std::atomic <bool> const & stop, std::function <std::unique_ptr <T>()> pop):
             stop {stop},
             pop {std::move (pop)} {}
 
@@ -21,7 +21,7 @@ struct Slave {
     }
 
 private:
-    bool volatile const & stop;
+    std::atomic <bool> const & stop;
 
     std::function <std::unique_ptr <T>()> pop;
 };

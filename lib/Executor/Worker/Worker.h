@@ -47,7 +47,7 @@ private:
     std::thread slave;
     Queue <T> queue;
 
-    bool volatile shouldStop = false;
+    std::atomic <bool> shouldStop = false;
 };
 
 #endif //CONCURRENT_WORKER_H
