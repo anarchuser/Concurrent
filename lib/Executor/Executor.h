@@ -40,7 +40,6 @@ private:
     std::vector <std::unique_ptr <Worker <T>>> workers;
     Queue <T> queue;
 
-    std::unique_ptr <T> pop () { return queue.pop(); }
     std::unique_ptr <T> try_pop () { return queue.try_pop(); }
 };
 
