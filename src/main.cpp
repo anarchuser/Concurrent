@@ -25,7 +25,8 @@ int main (int argc, char * argv[]) {
 
     LOG (INFO) << "Start Running";
 
-    benchmark ();
+    Main();
+//    benchmark ();
 
     LOG (INFO) << "Stop Running";
 }

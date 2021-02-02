@@ -6,9 +6,11 @@
 #include <atomic>
 #include <functional>
 
+
+template <typename T>
 class Task: public ITask {
 public:
-    explicit Task (std::function <void()> && task): task {std::forward <std::function <void()>> (task)} {}
+    explicit Task (std::function <T()> && task): task {std::forward <std::function <T()>> (task)} {}
     Task (Task const & other) = delete;
     Task (Task && other) { * this = std::move (other); }
 
@@ -27,7 +29,7 @@ public:
     }
 
 private:
-    std::function <void()> task;
+    std::function <T()> task;
 };
 
 #endif //CONCURRENT_TASK_H
