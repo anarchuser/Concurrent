@@ -16,7 +16,8 @@ struct Slave {
     void operator () () {
         while (!stop) {
             auto task = pop();
-            task ? (* task)() : std::this_thread::yield();
+            if (task) (* task)();
+            else std::this_thread::yield();
         }
     }
 

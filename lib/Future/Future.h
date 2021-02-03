@@ -14,9 +14,9 @@ struct Future : IFuture {
     explicit Future (std::shared_ptr <T> const item,  std::shared_ptr <std::atomic <bool>> const done): item {item}, done {done} {}
     Future (Future const & other): Future (other.item) {}
 
-    std::shared_ptr <T> await() {
+    T await() {
         while (!isDone()) std::this_thread::yield();
-        return item;
+        return * item;
     }
     [[nodiscard]] virtual bool isDone() const override {
         return * done;
