@@ -5,29 +5,31 @@
 
 #include "../helper.h"
 
+#include <atomic>
 #include <memory>
 #include <thread>
 
 template <Streamable T>
-class Future : IFuture {
-    explicit Future (std::shared_ptr <T> const item): item {item} {}
+struct Future : IFuture {
+    explicit Future (std::shared_ptr <T> const item,  std::shared_ptr <std::atomic <bool>> const done): item {item}, done {done} {}
     Future (Future const & other): Future (other.item) {}
 
-    std::shared_ptr <T> await() const {
-        while (!done()) std::this_thread::yield();
+    std::shared_ptr <T> await() {
+        while (!isDone()) std::this_thread::yield();
         return item;
     }
-    [[nodiscard]] bool done() const {
-        return item != nullptr;
+    [[nodiscard]] virtual bool isDone() const override {
+        return * done;
     }
-    [[nodiscard]] bool operator ! const {
-        return done();
+    [[nodiscard]] bool operator !() const {
+        return * done;
     }
 
 private:
-    std::shared_ptr <T> const volatile item;
+    std::shared_ptr <T> const item;
+    std::shared_ptr <std::atomic <bool>> const done;
 };
 
 #endif //CONCURRENT_FUTURE_H
 
-/* Copyright (C) 2020 Aaron Alef */
+/* Copyright (C) 2021 Aaron Alef */

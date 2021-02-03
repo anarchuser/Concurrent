@@ -40,8 +40,6 @@ public:
 
     TimedTask & operator = (TimedTask && other) {
         task = std::move (other.task);
-        run = other.run;
-        done = other.done;
         ctor  = other.ctor;
         start = other.start;
         end   = other.end;
@@ -49,13 +47,16 @@ public:
         return * this;
     }
 
-    virtual void operator () () override {
+    void operator () () {
         if (run) return await();
         run = true;
         start = std::chrono::high_resolution_clock::now();
         (* task) ();
-        done = true;
+        * done = true;
         end = std::chrono::high_resolution_clock::now();
+    }
+    void await() const {
+        while (!isDone()) std::this_thread::yield();
     }
 
     static std::atomic <std::size_t> accumulated_idle;
@@ -74,4 +75,4 @@ std::unique_ptr <TimedTask> timedTaskOf (std::function <void()> && task);
 
 #endif //CONCURRENT_TIMEDTASK_H
 
-/* Copyright (C) 2020 Aaron Alef */
+/* Copyright (C) 2021 Aaron Alef */
