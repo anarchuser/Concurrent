@@ -17,6 +17,9 @@ public:
     }
     ~Executor() { await(); }
 
+    void schedule (T && item) {
+        schedule (std::make_unique <T> (std::forward <T> (item)));
+    }
     void schedule (std::unique_ptr <T> item) {
         next().push (std::move (item));
     }
