@@ -33,6 +33,9 @@ struct Worker {
         slave.join();
     }
 
+    void push (T && item) {
+        push (std::make_unique <T> (std::move (item)));
+    }
     void push (std::unique_ptr <T> item) {
         queue.push (std::move (item));
     }

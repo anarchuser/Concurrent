@@ -21,6 +21,9 @@ public:
     Queue (Queue && other) = delete;
     ~Queue () { flush(); }
 
+    void push (T && item) {
+        push (std::make_unique <T> (std::move (item)));
+    }
     void push (std::unique_ptr <T> item) {
         auto tmp = new Container <T> (std::move (item));
         {
