@@ -138,11 +138,11 @@ private:
 
 template <typename R>
 std::atomic <std::size_t> Task <R>::accumulated_idle = 0;
+std::atomic <std::size_t> Task <void>::accumulated_idle = 0;
 template <typename R>
 std::atomic <std::size_t> Task <R>::accumulated_work = 0;
-
-std::atomic <std::size_t> Task <void>::accumulated_idle = 0;
 std::atomic <std::size_t> Task <void>::accumulated_work = 0;
+
 
 #endif //CONCURRENT_TASK_H
 
