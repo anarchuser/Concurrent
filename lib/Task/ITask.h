@@ -12,24 +12,7 @@
 
 struct ITask {
 public:
-    ~ITask() {
-        if (end <= start) return;
-        dtor = std::chrono::high_resolution_clock::now();
-        accumulated_idle += (start -  ctor).count();
-        accumulated_work += (end   - start).count();
-        STD_OSTREAM <<
-                    "Task ID "   << ID   <<
-                    "\tPointer " << this <<
-                    "\tThread #" << std::this_thread::get_id() <<
-                    "\tctor "    << ctor     <<
-                    "\tstart "   << start    <<
-                    "\tend "     << end      <<
-                    "\tdtor "    << dtor     <<
-                    "\tidle "    << (start - ctor)  <<
-                    "\twork "    << (end   - start) <<
-                    "\tlinger "  << (dtor  - end)   <<
-                    "\ttotal "   << (dtor  - ctor) << std::endl;
-    }
+    ~ITask();
 
     const int ID = ID_ctr++;
 
@@ -51,7 +34,7 @@ protected:
     std::atomic <bool> run = false;
     std::shared_ptr <std::atomic <bool>> done = std::make_shared <std::atomic <bool>> (false);
 
-    std::chrono::time_point <std::chrono::high_resolution_clock> ctor, start, end, dtor;
+    std::chrono::time_point <std::chrono::high_resolution_clock> ctor, start, end;
 
 private:
     static std::atomic <std::size_t> accumulated_idle;

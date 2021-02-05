@@ -29,7 +29,6 @@ public:
         ctor   = other.ctor;
         start  = other.start;
         end    = other.end;
-        dtor   = other.dtor;
         result = other.result;
         done   = other.done;
         return * this;
@@ -45,9 +44,8 @@ public:
             end = std::chrono::high_resolution_clock::now();
         }
     }
-    std::shared_ptr <R> await() const {
-        while (!isDone()) std::this_thread::yield();
-        return result;
+    R await() const {
+        return future().await();
     }
     Future <R> future() const {
         return Future <R> (result, done);
@@ -57,7 +55,7 @@ private:
     std::function <R()> task;
     std::shared_ptr <R> result = std::make_shared <R>();
 
-    std::chrono::time_point <std::chrono::high_resolution_clock> ctor, start, end, dtor;
+    std::chrono::time_point <std::chrono::high_resolution_clock> ctor, start, end;
 };
 
 /** Task without return value */
@@ -77,7 +75,6 @@ public:
         ctor   = other.ctor;
         start  = other.start;
         end    = other.end;
-        dtor   = other.dtor;
         done   = other.done;
         return * this;
     }

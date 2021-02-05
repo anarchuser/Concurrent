@@ -5,6 +5,24 @@ std::atomic <int> ITask::ID_ctr = 0;
 std::atomic <std::size_t> ITask::accumulated_idle = 0;
 std::atomic <std::size_t> ITask::accumulated_work = 0;
 
+ITask::~ITask() {
+//    if (end <= start) return;
+    auto dtor = std::chrono::high_resolution_clock::now();
+    accumulated_idle += (start -  ctor).count();
+    accumulated_work += (end   - start).count();
+    STD_OSTREAM <<
+                "Task ID "   << (int) ID <<
+                "\tThread #" << std::this_thread::get_id() <<
+                "\tctor "    << ctor     <<
+                "\tstart "   << start    <<
+                "\tend "     << end      <<
+                "\tdtor "    << dtor     <<
+                "\tidle "    << (start - ctor)  <<
+                "\twork "    << (end   - start) <<
+                "\tlinger "  << (dtor  - end)   <<
+                "\ttotal "   << (dtor  - ctor) << std::endl;
+}
+
 bool ITask::operator ! () const {
     return !isDone();
 }
