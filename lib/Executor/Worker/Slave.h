@@ -16,10 +16,7 @@ struct Slave {
     void operator () () {
         while (!stop) {
             auto task = pop();
-            if (task) {
-                (std::cout << '.').flush();
-                (* task)();
-            }
+            if (task) (* task)();
             else std::this_thread::yield();
         }
     }

@@ -5,6 +5,7 @@
 
 #include "../lib/helper.h"
 #include "../lib/Executor/Executor.h"
+#include "../lib/Future/Future.h"
 #include "../lib/Task/Task.h"
 
 #include "functions.h"
@@ -12,22 +13,34 @@
 
 #include <chrono>
 #include <iostream>
+#include <vector>
 
 void benchmark () {
     auto total = TIME (
             Executor <ITask> executor;
 
             /* Fibonacci */
-            for (int x = MAX_FIB - ITERATIONS + 1; x <= MAX_FIB; ++x)
-                executor.schedule (Task <unsigned long long> ([x] { return fibonacci(x); }));
+            std::vector <Future <unsigned long long>> futures;
+            for (int x = 0; x <= MAX_FIB; x++) {
+                Task <unsigned long long> task ([x] { return fibonacci (x); });
+                futures.push_back (task.future());
+                executor.schedule (std::move (task));
+            }
 
             /* Sleep / Counter */
             for (int x = 0; x < ITERATIONS; x++)
                 executor.schedule (Task <int> ([]{ return count_to (SLEEP_IN_MS); }));
+
+            std::cout << "\n|| Finished ||\n" << std::endl;
+            for (int x = 0; x <= MAX_FIB; x++) {
+                long long fx = fibonacci (x);
+                long long fa = futures [x].await();
+                std::cout << "fibonacci (" << (int) x << ") = " << (long long) fx << "; was " << (long long) fa << std::endl;
+            }
     );
     STD_OSTREAM << "\nthreads\t" << AVAILABLE_THREADS << std::endl;
-    STD_OSTREAM << "idle\tΣ\t" << std::chrono::nanoseconds (Task <unsigned long long>::accumulated_idle) << std::endl;
-    STD_OSTREAM << "work\tΣ\t" << std::chrono::nanoseconds (Task <unsigned long long>::accumulated_work) << std::endl;
+    STD_OSTREAM << "idle\tΣ\t" << std::chrono::nanoseconds (ITask::idle()) << std::endl;
+    STD_OSTREAM << "work\tΣ\t" << std::chrono::nanoseconds (ITask::work()) << std::endl;
     STD_OSTREAM << "total\tΣ\t" << total << std::endl;
 }
 

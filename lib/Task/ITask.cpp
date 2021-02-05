@@ -2,6 +2,9 @@
 
 std::atomic <int> ITask::ID_ctr = 0;
 
+std::atomic <std::size_t> ITask::accumulated_idle = 0;
+std::atomic <std::size_t> ITask::accumulated_work = 0;
+
 bool ITask::operator ! () const {
     return !isDone();
 }
