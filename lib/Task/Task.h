@@ -24,7 +24,7 @@ public:
     Task (Task const & other) = delete;
     Task (Task && other) noexcept { * this = std::move (other); }
     ~Task () {
-        if (!done) return;
+        if (end <= start) return;
         dtor = std::chrono::high_resolution_clock::now();
         accumulated_idle += (start - ctor).count();
         accumulated_work += (end  - start).count();
