@@ -20,23 +20,12 @@ void benchmark () {
             Executor <ITask> executor;
 
             /* Fibonacci */
-            std::vector <Future <unsigned long long>> futures;
-            for (int x = 0; x <= MAX_FIB; x++) {
-                Task <unsigned long long> task ([x] { return fibonacci (x); });
-                futures.push_back (task.future());
-                executor.schedule (std::move (task));
-            }
+            for (int x = 0; x <= MAX_FIB; x++)
+                executor.schedule (Task <unsigned long long> ([x] { return fibonacci (x); }));
 
             /* Sleep / Counter */
             for (int x = 0; x < ITERATIONS; x++)
                 executor.schedule (Task <int> ([]{ return count_to (SLEEP_IN_MS); }));
-
-            std::cout << "\n|| Finished ||\n" << std::endl;
-            for (int x = 0; x <= MAX_FIB; x++) {
-                long long fx = fibonacci (x);
-                long long fa = futures [x].await();
-                std::cout << "fibonacci (" << (int) x << ") = " << (long long) fx << "; was " << (long long) fa << std::endl;
-            }
     );
     STD_OSTREAM << "\nthreads\t" << AVAILABLE_THREADS << std::endl;
     STD_OSTREAM << "idle\tΣ\t" << std::chrono::nanoseconds (ITask::idle()) << std::endl;

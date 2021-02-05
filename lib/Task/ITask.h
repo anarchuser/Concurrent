@@ -13,12 +13,12 @@
 struct ITask {
 public:
     ~ITask() {
-//        if (end <= start) return;
+        if (end <= start) return;
         dtor = std::chrono::high_resolution_clock::now();
-        accumulated_idle += (start - ctor).count();
-        accumulated_work += (end  - start).count();
+        accumulated_idle += (start -  ctor).count();
+        accumulated_work += (end   - start).count();
         STD_OSTREAM <<
-                    "Task ID "    << ID <<
+                    "Task ID "   << ID   <<
                     "\tPointer " << this <<
                     "\tThread #" << std::this_thread::get_id() <<
                     "\tctor "    << ctor     <<
