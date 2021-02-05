@@ -10,6 +10,7 @@ struct ITask {
 public:
     const int ID = ID_ctr++;
 
+    virtual void operator ()() = 0;
     [[nodiscard]] virtual bool operator ! () const;
     [[nodiscard]] virtual bool isDone () const;
     [[nodiscard]] virtual bool isRunning () const;

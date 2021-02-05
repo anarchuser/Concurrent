@@ -24,7 +24,7 @@ public:
     Task (Task const & other) = delete;
     Task (Task && other) noexcept { * this = std::move (other); }
     ~Task () {
-        if (end <= start) return;
+//        if (end <= start) return;
         dtor = std::chrono::high_resolution_clock::now();
         accumulated_idle += (start - ctor).count();
         accumulated_work += (end  - start).count();
@@ -43,24 +43,25 @@ public:
     }
 
     Task & operator = (Task && other) {
-        task = std::move (other.task);
-        ctor  = other.ctor;
-        start = other.start;
-        end   = other.end;
-        dtor  = other.dtor;
+        task   = std::move (other.task);
+        ctor   = other.ctor;
+        start  = other.start;
+        end    = other.end;
+        dtor   = other.dtor;
         result = other.result;
-        done = other.done;
+        done   = other.done;
         return * this;
     }
 
-    std::shared_ptr <R> operator () () {
-        if (run) return await();
-        run = true;
-        start = std::chrono::high_resolution_clock::now();
-        * result = task();
-        * done = true;
-        end = std::chrono::high_resolution_clock::now();
-        return result;
+    void operator ()() override {
+        if (run) await();
+        else {
+            run = true;
+            start = std::chrono::high_resolution_clock::now();
+            * result = task();
+            * done = true;
+            end = std::chrono::high_resolution_clock::now();
+        }
     }
     std::shared_ptr <R> await() const {
         while (!isDone()) std::this_thread::yield();
@@ -117,11 +118,13 @@ public:
 
     void operator () () {
         if (run) return await();
-        run = true;
-        start = std::chrono::high_resolution_clock::now();
-        task();
-        * done = true;
-        end = std::chrono::high_resolution_clock::now();
+        else {
+            run = true;
+            start = std::chrono::high_resolution_clock::now();
+            task();
+            *done = true;
+            end = std::chrono::high_resolution_clock::now();
+        }
     }
     void await() const {
         while (!isDone()) std::this_thread::yield();

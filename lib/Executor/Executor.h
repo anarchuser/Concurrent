@@ -17,8 +17,9 @@ public:
     }
     ~Executor() { await(); }
 
-    void schedule (T && item) {
-        schedule (std::make_unique <T> (std::forward <T> (item)));
+    template <Subclass <T> D>
+    void schedule (D && item) {
+        schedule (std::make_unique <D> (std::forward <D> (item)));
     }
     void schedule (std::unique_ptr <T> item) {
         next().push (std::move (item));

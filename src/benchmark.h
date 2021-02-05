@@ -15,15 +15,15 @@
 
 void benchmark () {
     auto total = TIME (
-            Executor <Task <unsigned long long>> executor;
+            Executor <ITask> executor;
 
             /* Fibonacci */
             for (int x = MAX_FIB - ITERATIONS + 1; x <= MAX_FIB; ++x)
-                executor.schedule(std::make_unique<Task <unsigned long long>>([x] { return fibonacci(x); }));
+                executor.schedule (Task <unsigned long long> ([x] { return fibonacci(x); }));
 
             /* Sleep / Counter */
             for (int x = 0; x < ITERATIONS; x++)
-                executor.schedule (std::make_unique <Task <unsigned long long>> ([] { return count_to (SLEEP_IN_MS); }));
+                executor.schedule (Task <int> ([]{ return count_to (SLEEP_IN_MS); }));
     );
     STD_OSTREAM << "\nthreads\t" << AVAILABLE_THREADS << std::endl;
     STD_OSTREAM << "idle\tΣ\t" << std::chrono::nanoseconds (Task <unsigned long long>::accumulated_idle) << std::endl;

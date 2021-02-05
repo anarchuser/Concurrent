@@ -33,8 +33,9 @@ struct Worker {
         slave.join();
     }
 
-    void push (T && item) {
-        push (std::make_unique <T> (std::move (item)));
+    template <Subclass <T> D>
+    void push (D && item) {
+        push (std::make_unique <D> (std::forward <D> (item)));
     }
     void push (std::unique_ptr <T> item) {
         queue.push (std::move (item));
