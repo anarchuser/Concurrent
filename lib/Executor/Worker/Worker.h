@@ -9,9 +9,9 @@
 #include <memory>
 #include <thread>
 
-template <Runnable T>
+template <Callable C>
 struct Worker {
-    Worker (): slave {Slave <T> (shouldStop, [this]() -> std::unique_ptr <T> {
+    Worker (): slave {Slave <C> (shouldStop, [this]() -> std::unique_ptr <C> {
         return this->queue.try_pop();
     })} {}
     ~Worker() {
@@ -33,11 +33,11 @@ struct Worker {
         slave.join();
     }
 
-    template <Subclass <T> D>
+    template <Subclass <C> D>
     void push (D && item) {
         push (std::make_unique <D> (std::forward <D> (item)));
     }
-    void push (std::unique_ptr <T> item) {
+    void push (std::unique_ptr <C> item) {
         queue.push (std::move (item));
     }
     [[nodiscard]] bool empty () const {
@@ -49,7 +49,7 @@ struct Worker {
 
 private:
     std::thread slave;
-    Queue <T> queue;
+    Queue <C> queue;
 
     std::atomic <bool> shouldStop = false;
 };

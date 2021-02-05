@@ -8,7 +8,7 @@
 #include <thread>
 
 template <typename T>
-requires Streamable <T> && Runnable <T>
+requires Streamable <T> && Callable <T>
 class Executor {
 public:
     Executor() {
@@ -65,7 +65,7 @@ private:
 };
 
 template <typename T>
-requires Streamable <T> && Runnable <T>
+requires Streamable <T> && Callable <T>
 std::vector <std::unique_ptr <Worker <T>>> Executor <T>::workers = std::vector <std::unique_ptr <Worker <T>>>();
 
 #endif //CONCURRENT_EXECUTOR_H
