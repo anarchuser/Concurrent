@@ -12,7 +12,7 @@
 
 struct ITask {
 public:
-    ~ITask();
+    virtual ~ITask();
 
     const int ID = ID_ctr++;
 
@@ -31,10 +31,14 @@ public:
     }
 
 protected:
+    ITask();
+
     std::atomic <bool> run = false;
     std::shared_ptr <std::atomic <bool>> done = std::make_shared <std::atomic <bool>> (false);
 
-    std::chrono::time_point <std::chrono::high_resolution_clock> ctor, start, end;
+    std::chrono::time_point <std::chrono::high_resolution_clock> ctor = std::chrono::high_resolution_clock::now();
+    std::chrono::time_point <std::chrono::high_resolution_clock> start;
+    std::chrono::time_point <std::chrono::high_resolution_clock> end;
 
 private:
     static std::atomic <std::size_t> accumulated_idle;

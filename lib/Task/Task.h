@@ -19,8 +19,7 @@ template <typename R>
 class Task: public ITask {
 public:
     explicit Task (std::function <R()> && task):
-            task {std::forward <std::function <R()>> (task)},
-            ctor {std::chrono::high_resolution_clock::now()} {}
+            task {std::forward <std::function <R()>> (task)} {}
     Task (Task const & other) = delete;
     Task (Task && other) noexcept { * this = std::move (other); }
 
@@ -54,8 +53,6 @@ public:
 private:
     std::function <R()> task;
     std::shared_ptr <R> result = std::make_shared <R>();
-
-    std::chrono::time_point <std::chrono::high_resolution_clock> ctor, start, end;
 };
 
 /** Task without return value */
@@ -64,7 +61,7 @@ class Task <void>: public ITask {
 public:
     explicit Task (std::function <void()> && task):
             task {std::forward <std::function <void()>> (task)} {
-        ctor = std::chrono::high_resolution_clock::now();
+        ITask::ctor = std::chrono::high_resolution_clock::now();
     }
 
     Task (Task const & other) = delete;
@@ -79,8 +76,8 @@ public:
         return * this;
     }
 
-    void operator () () {
-        if (run) return await();
+    void operator () () override {
+        if (run) await();
         else {
             run = true;
             start = std::chrono::high_resolution_clock::now();

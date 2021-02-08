@@ -5,8 +5,10 @@ std::atomic <int> ITask::ID_ctr = 0;
 std::atomic <std::size_t> ITask::accumulated_idle = 0;
 std::atomic <std::size_t> ITask::accumulated_work = 0;
 
+ITask::ITask(): ctor {std::chrono::high_resolution_clock::now()} {}
+
 ITask::~ITask() {
-//    if (end <= start) return;
+    if (end <= start) return;
     auto dtor = std::chrono::high_resolution_clock::now();
     accumulated_idle += (start -  ctor).count();
     accumulated_work += (end   - start).count();
@@ -32,6 +34,7 @@ bool ITask::isDone() const {
 bool ITask::isRunning() const {
     return run && !isDone();
 }
+
 std::string ITask::toString() const {
     std::stringstream ss;
     ss << "Task #" << ID << ": " << (isDone() ? "done" : (run) ? "running" : "idle");
