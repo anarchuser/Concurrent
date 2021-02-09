@@ -45,7 +45,7 @@ public:
         }
     }
     Future <R> future() const {
-        return Future <R> (result, done);
+        return Future <R> (result.get(), done);
     }
 
 private:
@@ -54,7 +54,7 @@ private:
     }
 
     std::function <R()> task;
-    std::shared_ptr <R> result = std::make_shared <R>();
+    std::unique_ptr <R> result = std::make_unique <R>();
 };
 
 /** Task without return value */
