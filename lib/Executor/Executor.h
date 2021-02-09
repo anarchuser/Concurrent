@@ -19,7 +19,7 @@ public:
     ~Executor() { await(); }
 
     template <typename R>
-    std::shared_ptr <IFuture> schedule (std::function <R()> && task) {
+    Future <R> schedule (std::function <R()> && task) {
         auto item = std::make_unique <Task <R>> (std::forward <std::function <R()>> (task));
         auto future = item->future();
         next().push (std::move (item));

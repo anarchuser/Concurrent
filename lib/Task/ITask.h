@@ -31,12 +31,9 @@ public:
         return accumulated_work;
     }
 
-    [[nodiscard]] virtual std::shared_ptr <IFuture> future() const;
-
 protected:
     ITask();
 
-    std::shared_ptr <IFuture> _future;
     std::atomic <bool> run = false;
     std::shared_ptr <std::atomic <bool>> done = std::make_shared <std::atomic <bool>> (false);
 

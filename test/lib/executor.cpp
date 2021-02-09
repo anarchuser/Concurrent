@@ -14,9 +14,9 @@ SCENARIO ("Executor basic I/O") {
 
         REQUIRE (executor.empty());
         WHEN ("I insert the strings into the executor") {
-            CHECK_NOTHROW (executor.schedule <void> ([] { LOG (INFO) << "task 1/3 successful"; })));
-            CHECK_NOTHROW (executor.schedule <void> ([] { LOG (INFO) << "task 2/3 successful"; })));
-            CHECK_NOTHROW (executor.schedule <void> ([] { LOG (INFO) << "task 3/3 successful"; })));
+            CHECK_NOTHROW (executor.schedule <void> ([] { LOG (INFO) << "task 1/3 successful"; }));
+            CHECK_NOTHROW (executor.schedule <void> ([] { LOG (INFO) << "task 2/3 successful"; }));
+            CHECK_NOTHROW (executor.schedule <void> ([] { LOG (INFO) << "task 3/3 successful"; }));
         }
         CHECK_NOTHROW (executor.await());
         REQUIRE (executor.empty());

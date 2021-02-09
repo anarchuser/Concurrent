@@ -5,6 +5,7 @@
 
 struct IFuture {
     virtual ~IFuture() = 0;
+    IFuture (IFuture && other) noexcept;
 
     [[nodiscard]] virtual bool isDone() const;
     [[nodiscard]] virtual bool operator !() const;

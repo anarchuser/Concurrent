@@ -35,10 +35,6 @@ bool ITask::isRunning() const {
     return run && !isDone();
 }
 
-std::shared_ptr <IFuture> ITask::future() const {
-    return _future;
-}
-
 std::string ITask::toString() const {
     std::stringstream ss;
     ss << "Task #" << ID << ": " << (isDone() ? "done" : (run) ? "running" : "idle");

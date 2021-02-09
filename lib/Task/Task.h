@@ -20,14 +20,12 @@ class Task: public ITask {
 public:
     explicit Task (std::function <R()> && task):
             task {std::forward <std::function <R()>> (task)} {
-        _future = std::make_shared <Future <R>> (result, done);
     }
     Task (Task const & other) = delete;
     Task (Task && other) noexcept { * this = std::move (other); }
 
     Task & operator = (Task && other) {
         task    = std::move (other.task);
-        _future = std::move (other._future);
         ctor    = other.ctor;
         start   = other.start;
         end     = other.end;
@@ -46,6 +44,9 @@ public:
             end = std::chrono::high_resolution_clock::now();
         }
     }
+    Future <R> future() const {
+        return Future <R> (result, done);
+    }
 
 private:
     void await() {
@@ -63,7 +64,6 @@ public:
     explicit Task (std::function <void()> && task):
             task {std::forward <std::function <void()>> (task)} {
         ctor = std::chrono::high_resolution_clock::now();
-        _future = std::make_shared <Future <void>> (done);
     }
 
     Task (Task const & other) = delete;
@@ -71,7 +71,6 @@ public:
 
     Task & operator = (Task && other)  noexcept {
         task    = std::move (other.task);
-        _future = std::move (other._future);
         ctor    = other.ctor;
         start   = other.start;
         end     = other.end;
@@ -89,11 +88,15 @@ public:
             end = std::chrono::high_resolution_clock::now();
         }
     }
+    Future <void> future() const {
+        return Future <void> (done);
+    }
+
+private:
     void await() const {
         while (!isDone()) std::this_thread::yield();
     }
 
-private:
     std::function <void()> task;
 };
 
