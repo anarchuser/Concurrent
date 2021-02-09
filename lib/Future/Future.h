@@ -9,7 +9,7 @@
 #include <memory>
 #include <thread>
 
-template <Streamable T>
+template <typename T>
 struct Future : IFuture {
     explicit Future (std::shared_ptr <T> const item,  std::shared_ptr <std::atomic <bool>> const done): item {item}, done {done} {}
     Future (Future const & other): Future (other.item, other.done) {}
@@ -28,6 +28,11 @@ struct Future : IFuture {
 private:
     std::shared_ptr <T> const item;
     std::shared_ptr <std::atomic <bool>> const done;
+};
+
+template <>
+struct Future <void>: IFuture {
+
 };
 
 #endif //CONCURRENT_FUTURE_H

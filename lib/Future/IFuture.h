@@ -4,6 +4,8 @@
 #include <thread>
 
 struct IFuture {
+    virtual ~IFuture() = 0;
+
     virtual bool isDone() const = 0;
 };
 

@@ -25,7 +25,7 @@ void benchmark () {
 
             /* Sleep / Counter */
             for (int x = 0; x < ITERATIONS; x++)
-                executor.schedule (Task <int> ([]{ return count_to (SLEEP_IN_MS); }));
+                executor.schedule (Task <void> ([]{ count_to (SLEEP_IN_MS); }));
     );
     STD_OSTREAM << "\nthreads\t" << AVAILABLE_THREADS << std::endl;
     STD_OSTREAM << "idle\tΣ\t" << std::chrono::nanoseconds (ITask::idle()) << std::endl;
