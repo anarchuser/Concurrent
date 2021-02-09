@@ -27,6 +27,9 @@ template <>
 struct Future <void>: IFuture {
     explicit Future (std::shared_ptr <std::atomic <bool>> const done): IFuture (done) {}
 
+    void await() const {
+        while (!isDone()) std::this_thread::yield();
+    }
 };
 
 #endif //CONCURRENT_FUTURE_H

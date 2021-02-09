@@ -34,7 +34,7 @@ void benchmark () {
 
             for (int x = 0; x < 20; x++) {
                 long long fib_x = fibonacci (x);
-                std::cout << "fibonacci (" << x << ") = " << fib_x << " (was " << (futures [x])->await() << ")" << std::endl;
+                LOG (INFO) << "fibonacci (" << x << ") = " << fib_x << " (was " << (futures [x])->await() << ")";
             }
     );
     STD_OSTREAM << "\nthreads\t" << AVAILABLE_THREADS << std::endl;
