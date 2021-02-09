@@ -3,6 +3,7 @@
 
 #include "../Queue/Queue.h"
 #include "Worker/Worker.h"
+#include "../Future/IFuture.h"
 
 #include <memory>
 #include <thread>
@@ -18,11 +19,13 @@ public:
     ~Executor() { await(); }
 
     template <Subclass <T> D>
-    void schedule (D && item) {
-        schedule (std::make_unique <D> (std::forward <D> (item)));
+    std::shared_ptr <IFuture> schedule (D && item) {
+        return schedule (std::make_unique <D> (std::forward <D> (item)));
     }
-    void schedule (std::unique_ptr <T> item) {
+    std::shared_ptr <IFuture> schedule (std::unique_ptr <T> item) {
+        auto future = item->future();
         next().push (std::move (item));
+        return future;
     }
     void await() const {
         while (!empty()) std::this_thread::yield();

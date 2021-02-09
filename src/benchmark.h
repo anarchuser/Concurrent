@@ -24,8 +24,7 @@ void benchmark () {
             /* Fibonacci */
             for (int x = 0; x <= MAX_FIB; x++) {
                 Task <unsigned long long> task ([x] { return fibonacci (x); });
-                futures.push_back (task.future());
-                executor.schedule (std::move (task));
+                futures.push_back (executor.schedule (std::move (task)));
             }
 
             /* Sleep / Counter */
