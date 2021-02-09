@@ -19,18 +19,21 @@ template <typename R>
 class Task: public ITask {
 public:
     explicit Task (std::function <R()> && task):
-            task {std::forward <std::function <R()>> (task)} {}
+            task {std::forward <std::function <R()>> (task)} {
+        _future = std::make_shared <Future <R>> (result, done);
+    }
     Task (Task const & other) = delete;
     Task (Task && other) noexcept { * this = std::move (other); }
 
     Task & operator = (Task && other) {
-        task   = std::move (other.task);
-        ctor   = other.ctor;
-        start  = other.start;
-        end    = other.end;
-        result = other.result;
-        done   = other.done;
-        return * this;
+        task    = std::move (other.task);
+        _future = std::move (other._future);
+        ctor    = other.ctor;
+        start   = other.start;
+        end     = other.end;
+        result  = other.result;
+        done    = other.done;
+        return  * this;
     }
 
     void operator ()() override {
@@ -43,14 +46,12 @@ public:
             end = std::chrono::high_resolution_clock::now();
         }
     }
-    R await() const {
-        return future()->await();
-    }
-    std::shared_ptr <Future <R>> future() const {
-        return std::make_shared <Future <R>> (result, done);
-    }
 
 private:
+    void await() {
+        while (!isDone()) std::this_thread::yield();
+    }
+
     std::function <R()> task;
     std::shared_ptr <R> result = std::make_shared <R>();
 };
@@ -61,19 +62,21 @@ class Task <void>: public ITask {
 public:
     explicit Task (std::function <void()> && task):
             task {std::forward <std::function <void()>> (task)} {
-        ITask::ctor = std::chrono::high_resolution_clock::now();
+        ctor = std::chrono::high_resolution_clock::now();
+        _future = std::make_shared <Future <void>> (done);
     }
 
     Task (Task const & other) = delete;
     Task (Task && other) noexcept { * this = std::move (other); }
 
     Task & operator = (Task && other)  noexcept {
-        task   = std::move (other.task);
-        ctor   = other.ctor;
-        start  = other.start;
-        end    = other.end;
-        done   = other.done;
-        return * this;
+        task    = std::move (other.task);
+        _future = std::move (other._future);
+        ctor    = other.ctor;
+        start   = other.start;
+        end     = other.end;
+        done    = other.done;
+        return  * this;
     }
 
     void operator () () override {

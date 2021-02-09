@@ -7,7 +7,7 @@ bool IFuture::isDone() const {
     return * done;
 }
 bool IFuture::operator !() const {
-    return * done;
+    return !isDone();
 }
 
 /* Copyright (C) 2021 Aaron Alef */

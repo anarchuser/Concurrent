@@ -14,7 +14,7 @@ struct Future : public IFuture {
     Future (std::shared_ptr <T> const item,  std::shared_ptr <std::atomic <bool>> const done): IFuture (done), item {item} {}
     Future (Future const & other): Future (other.item, other.done) {}
 
-    T await() {
+    T await() const {
         while (!isDone()) std::this_thread::yield();
         return * item;
     }

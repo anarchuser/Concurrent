@@ -19,7 +19,7 @@ void benchmark () {
     auto total = TIME (
             Executor <ITask> executor;
 
-            std::vector <std::shared_ptr <Future <unsigned long long>>> futures;
+            std::vector <std::shared_ptr <IFuture>> futures;
 
             /* Fibonacci */
             for (int x = 0; x <= MAX_FIB; x++) {
@@ -34,7 +34,8 @@ void benchmark () {
 
             for (int x = 0; x < 20; x++) {
                 long long fib_x = fibonacci (x);
-                LOG (INFO) << "fibonacci (" << x << ") = " << fib_x << " (was " << (futures [x])->await() << ")";
+                auto future = std::dynamic_pointer_cast <Future <unsigned long long>> (futures [x]);
+                LOG (INFO) << "fibonacci (" << x << ") = " << fib_x << " (was " << future->await() << ")";
             }
     );
     STD_OSTREAM << "\nthreads\t" << AVAILABLE_THREADS << std::endl;

@@ -22,7 +22,7 @@ ITask::~ITask() {
                 "\tidle "    << (start - ctor)  <<
                 "\twork "    << (end   - start) <<
                 "\tlinger "  << (dtor  - end)   <<
-                "\ttotal "   << (dtor  - ctor) << std::endl;
+                "\ttotal "   << (dtor  - ctor)  << std::endl;
 }
 
 bool ITask::operator ! () const {
@@ -33,6 +33,10 @@ bool ITask::isDone() const {
 }
 bool ITask::isRunning() const {
     return run && !isDone();
+}
+
+std::shared_ptr <IFuture> ITask::future() const {
+    return _future;
 }
 
 std::string ITask::toString() const {
