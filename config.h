@@ -20,6 +20,7 @@ std::string const STR = std::string();
 }; true
 #endif
 
+#include <iostream>
 #define STD_OSTREAM std::cout
 
 #define AVAILABLE_THREADS 10
