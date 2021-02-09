@@ -21,6 +21,10 @@ public:
     Queue (Queue && other) = delete;
     ~Queue () { flush(); }
 
+    template <Subclass <T> D>
+    void push (D && item) {
+        push (std::make_unique <D> (std::forward <D> (item)));
+    }
     void push (std::unique_ptr <T> item) {
         auto tmp = new Container <T> (std::move (item));
         {

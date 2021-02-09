@@ -3,25 +3,27 @@
 
 #include "../Queue/Queue.h"
 #include "Worker/Worker.h"
+#include "../Future/IFuture.h"
+#include "../Task/ITask.h"
+#include "../Task/Task.h"
 
 #include <memory>
 #include <thread>
 
-template <typename T>
-requires Streamable <T> && Runnable <T>
 class Executor {
 public:
     Executor() {
         for (std::size_t worker = workers.size(); worker < AVAILABLE_THREADS; ++worker)
-            workers.template emplace_back (std::make_unique <Worker <T>>());
+            workers.template emplace_back (std::make_unique <Worker <ITask>>());
     }
     ~Executor() { await(); }
 
-    void schedule (T && item) {
-        schedule (std::make_unique <T> (std::forward <T> (item)));
-    }
-    void schedule (std::unique_ptr <T> item) {
+    template <typename R>
+    Future <R> schedule (std::function <R()> && task) {
+        auto item = std::make_unique <Task <R>> (std::forward <std::function <R()>> (task));
+        auto future = item->future();
         next().push (std::move (item));
+        return future;
     }
     void await() const {
         while (!empty()) std::this_thread::yield();
@@ -37,7 +39,7 @@ public:
     [[nodiscard]] std::size_t size () const {
         std::size_t sum = 0;
         for (auto const & worker : workers)
-            sum += worker.size();
+            sum += worker->size();
         return sum;
     }
 
@@ -48,9 +50,9 @@ public:
     }
 
 private:
-    static std::vector <std::unique_ptr <Worker <T>>> workers;
+    static std::vector <std::unique_ptr <Worker <ITask>>> workers;
 
-    Worker <T> & next () {
+    Worker <ITask> & next () {
         std::size_t min = -1;
         std::size_t min_idx;
         for (std::size_t idx = 0; idx < AVAILABLE_THREADS; ++idx) {
@@ -63,9 +65,7 @@ private:
     }
 };
 
-template <typename T>
-requires Streamable <T> && Runnable <T>
-std::vector <std::unique_ptr <Worker <T>>> Executor <T>::workers = std::vector <std::unique_ptr <Worker <T>>>();
+std::vector <std::unique_ptr <Worker <ITask>>> Executor::workers = std::vector <std::unique_ptr <Worker <ITask>>>();
 
 #endif //CONCURRENT_EXECUTOR_H
 

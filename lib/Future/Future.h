@@ -9,25 +9,33 @@
 #include <memory>
 #include <thread>
 
-template <Streamable T>
-struct Future : IFuture {
-    explicit Future (std::shared_ptr <T> const item,  std::shared_ptr <std::atomic <bool>> const done): item {item}, done {done} {}
-    Future (Future const & other): Future (other.item) {}
+template <typename T>
+struct Future : public IFuture {
+    Future (std::shared_ptr <T> const item,  std::shared_ptr <std::atomic <bool>> const done): IFuture (done), item {item} {}
+    Future (Future const & other) = delete;
+    Future (Future && other): IFuture (std::move (other)), item {other.item} {}
 
-    T await() {
+    Future & operator = (Future && other) noexcept {
+        item = other.item;
+        return * this;
+    }
+
+    T await() const {
         while (!isDone()) std::this_thread::yield();
         return * item;
-    }
-    [[nodiscard]] virtual bool isDone() const override {
-        return * done;
-    }
-    [[nodiscard]] bool operator !() const {
-        return * done;
     }
 
 private:
     std::shared_ptr <T> const item;
-    std::shared_ptr <std::atomic <bool>> const done;
+};
+
+template <>
+struct Future <void>: IFuture {
+    explicit Future (std::shared_ptr <std::atomic <bool>> const done): IFuture (done) {}
+
+    void await() const {
+        while (!isDone()) std::this_thread::yield();
+    }
 };
 
 #endif //CONCURRENT_FUTURE_H

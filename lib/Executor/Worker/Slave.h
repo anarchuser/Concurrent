@@ -7,9 +7,9 @@
 #include <thread>
 #include <functional>
 
-template <Runnable T>
+template <Callable C>
 struct Slave {
-    Slave (std::atomic <bool> const & stop, std::function <std::unique_ptr <T>()> pop):
+    Slave (std::atomic <bool> const & stop, std::function <std::unique_ptr <C>()> pop):
             stop {stop},
             pop {std::move (pop)} {}
 
@@ -24,7 +24,7 @@ struct Slave {
 private:
     std::atomic <bool> const & stop;
 
-    std::function <std::unique_ptr <T>()> pop;
+    std::function <std::unique_ptr <C>()> pop;
 };
 
 #endif //CONCURRENT_SLAVE_H

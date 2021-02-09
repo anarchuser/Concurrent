@@ -15,7 +15,7 @@ SCENARIO ("Queue basic I/O") {
         REQUIRE (queue.empty());
         WHEN ("I insert the strings into the queue") {
             for (auto const & s : elements) {
-                REQUIRE_NOTHROW (queue.push (make_unique <string> (s)));
+                REQUIRE_NOTHROW (queue.push (std::string (s)));
             }
 
             THEN ("The size grows accordingly") {
@@ -36,7 +36,7 @@ SCENARIO ("Queue basic I/O") {
         size_t idx = 0;
         for (auto const & s : elements) {
             CHECK (queue.empty());
-            REQUIRE_NOTHROW (queue.push (make_unique <string> (s)));
+            REQUIRE_NOTHROW (queue.push (std::string (s)));
             CHECK (queue.size() == 1);
             REQUIRE_NOTHROW (elements [idx++] == * queue.pop());
         }
