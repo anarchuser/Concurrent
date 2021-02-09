@@ -19,13 +19,23 @@ void benchmark () {
     auto total = TIME (
             Executor <ITask> executor;
 
+            std::vector <std::shared_ptr <Future <unsigned long long>>> futures;
+
             /* Fibonacci */
-            for (int x = 0; x <= MAX_FIB; x++)
-                executor.schedule (Task <unsigned long long> ([x] { return fibonacci (x); }));
+            for (int x = 0; x <= MAX_FIB; x++) {
+                Task <unsigned long long> task ([x] { return fibonacci (x); });
+                futures.push_back (task.future());
+                executor.schedule (std::move (task));
+            }
 
             /* Sleep / Counter */
             for (int x = 0; x < ITERATIONS; x++)
                 executor.schedule (Task <void> ([]{ count_to (SLEEP_IN_MS); }));
+
+            for (int x = 0; x < 20; x++) {
+                long long fib_x = fibonacci (x);
+                std::cout << "fibonacci (" << x << ") = " << fib_x << " (was " << (futures [x])->await() << ")" << std::endl;
+            }
     );
     STD_OSTREAM << "\nthreads\t" << AVAILABLE_THREADS << std::endl;
     STD_OSTREAM << "idle\tΣ\t" << std::chrono::nanoseconds (ITask::idle()) << std::endl;

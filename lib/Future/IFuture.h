@@ -6,7 +6,14 @@
 struct IFuture {
     virtual ~IFuture() = 0;
 
-    virtual bool isDone() const = 0;
+    [[nodiscard]] virtual bool isDone() const;
+    [[nodiscard]] virtual bool operator !() const;
+
+protected:
+    explicit IFuture (std::shared_ptr <std::atomic <bool>>);
+
+private:
+    std::shared_ptr <std::atomic <bool>> const done;
 };
 
 #endif //CONCURRENT_IFUTURE_H

@@ -44,10 +44,10 @@ public:
         }
     }
     R await() const {
-        return future().await();
+        return future()->await();
     }
-    Future <R> future() const {
-        return Future <R> (result, done);
+    std::shared_ptr <Future <R>> future() const {
+        return std::make_shared <Future <R>> (result, done);
     }
 
 private:
