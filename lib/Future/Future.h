@@ -11,7 +11,7 @@
 
 template <typename T>
 struct Future : public IFuture {
-    Future (T * const item, std::shared_ptr <std::atomic <bool>> const done): IFuture (done), item {item} {}
+    Future (std::shared_ptr <T> const item, std::shared_ptr <std::atomic <bool>> const done): IFuture (done), item {item} {}
     Future (Future const & other) = delete;
     Future (Future && other): IFuture (std::move (other)), item {other.item} {}
 
@@ -26,7 +26,7 @@ struct Future : public IFuture {
     }
 
 private:
-    T * const item;
+    std::shared_ptr <T> item;
 };
 
 template <>
@@ -37,6 +37,11 @@ struct Future <void>: IFuture {
         while (!isDone()) std::this_thread::yield();
     }
 };
+
+template <Streamable T>
+std::ostream & operator << (std::ostream & os, Future <T> const & future) {
+    return os << future.await();
+}
 
 #endif //CONCURRENT_FUTURE_H
 

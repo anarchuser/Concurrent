@@ -9,8 +9,9 @@
 using namespace std;
 
 SCENARIO ("Executor basic I/O") {
+    Executor executor;
+
     GIVEN ("A list of strings") {
-        Executor executor;
 
         REQUIRE (executor.empty());
         WHEN ("I insert the strings into the executor") {
@@ -22,10 +23,9 @@ SCENARIO ("Executor basic I/O") {
         REQUIRE (executor.empty());
     }
     GIVEN ("A few simple tasks") {
-        Executor executor;
         for (int x = -20; x < 20; x+= 4)
             CHECK (executor.schedule <int> ([x] {
-                std::this_thread::sleep_for (std::chrono::milliseconds (500));
+                this_thread::sleep_for (chrono::milliseconds (500));
                 return x;
             }).await() == x);
     }

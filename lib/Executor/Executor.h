@@ -21,9 +21,9 @@ public:
     template <typename R>
     Future <R> schedule (std::function <R()> && task) {
         auto item = std::make_unique <Task <R>> (std::forward <std::function <R()>> (task));
-        auto future = item->future();
+        auto future = std::move (item->future);
         next().push (std::move (item));
-        return future;
+        return std::move (future);
     }
     void await() const {
         while (!empty()) std::this_thread::yield();

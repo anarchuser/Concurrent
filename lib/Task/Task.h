@@ -19,8 +19,7 @@ template <typename R>
 class Task: public ITask {
 public:
     explicit Task (std::function <R()> && task):
-            task {std::forward <std::function <R()>> (task)} {
-    }
+            Task (std::forward <std::function <R()>> (task), std::make_shared <R>()) {}
     Task (Task const & other) = delete;
     Task (Task && other) noexcept { * this = std::move (other); }
 
@@ -39,22 +38,27 @@ public:
         else {
             run = true;
             start = std::chrono::high_resolution_clock::now();
-            * result = task();
+            auto tmp = task();
+            if (auto sp = result.lock()) * sp = std::move (tmp);
             * done = true;
             end = std::chrono::high_resolution_clock::now();
         }
     }
-    Future <R> future() const {
-        return Future <R> (result.get(), done);
-    }
+
+    Future <R> future;
 
 private:
+    Task (std::function <R()> && task, std::shared_ptr <R> && result):
+            task {std::forward <std::function <R()>> (task)},
+            future (result, done),
+            result {result} {}
+
     void await() {
         while (!isDone()) std::this_thread::yield();
     }
 
     std::function <R()> task;
-    std::unique_ptr <R> result = std::make_unique <R>();
+    std::weak_ptr <R> result;
 };
 
 /** Task without return value */
@@ -88,9 +92,7 @@ public:
             end = std::chrono::high_resolution_clock::now();
         }
     }
-    Future <void> future() const {
-        return Future <void> (done);
-    }
+    Future <void> future = Future <void> (done);
 
 private:
     void await() const {
