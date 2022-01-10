@@ -1,5 +1,5 @@
 name: Concurrent
-on: [push]
+on: [pull_request]
 jobs:
   dependencies:
     runs-on:  ubuntu-latest
@@ -41,6 +41,12 @@ jobs:
     needs:    dependencies
     runs-on:  ubuntu-latest
     steps:
+      - name: download catch2 v2
+        run:  git clone -b v2.x https://github.com/catchorg/Catch2.git
+      - name: setup catch2
+        run:  cmake -BCatch2/build -HCatch2 -DBUILD_TESTING=OFF
+      - name: build and install catch2
+        run: sudo cmake --build Catch2/build --target install
       - uses: actions/checkout@v2
       - name: configure cmake
         run:  cmake -H. -Bbuild
