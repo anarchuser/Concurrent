@@ -22,12 +22,16 @@ before_install:
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 100 --slave /usr/bin/gcc gcc /usr/bin/gcc-10 --slave /usr/bin/gcov gcov /usr/bin/gcov-10
 
     # Catch2
-#  - cd /opt
 #  - sudo git clone https://github.com/microsoft/vcpkg
 #  - sudo chown -R $eval$(whoami):$eval$(whoami) vcpkg
 #  - cd vcpkg
 #  - ./bootstrap-vcpkg.sh
 #  - ./vcpkg install catch2
+  - git clone -b v2.x https://github.com/catchorg/Catch2.git
+  - cd Catch2
+  - cmake -Bbuild -H. -DBUILD_TESTING=OFF
+  - sudo cmake --build build --target install
+  - cd ..
 
   - cd $wd
 
