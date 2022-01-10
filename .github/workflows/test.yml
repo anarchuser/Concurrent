@@ -8,6 +8,8 @@ jobs:
         run:  sudo apt install cmake
       - name: install g++-10
         run:  sudo apt install g++-10
+      - name: configure g++ 10 as default
+        run:  sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100 --slave /usr/bin/g++ g++ /usr/bin/g++-10 --slave /usr/bin/gcov gcov /usr/bin/gcov-10
       - name: install threads library
         run:  sudo apt install libpthread-stubs0-dev
       - name: install google logging library
