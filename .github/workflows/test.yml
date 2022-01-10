@@ -19,18 +19,13 @@ jobs:
       - name: build and install catch2
         run: sudo cmake --build Catch2/build --target install
 
-  setup:
+  build:
     needs:    dependencies
     runs-on:  ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: configure cmake
         run:  cmake -H. -Bbuild
-
-  build:
-    needs:    setup
-    runs-on:  ubuntu-latest
-    steps:
       - name: Build src and lib files
         run:  cmake --build build --target Concurrent
 
@@ -38,6 +33,9 @@ jobs:
     needs:    build
     runs-on:  ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+      - name: configure cmake
+        run:  cmake -H. -Bbuild
       - name: Build test files
         run:  cmake --build build --target Test
 
