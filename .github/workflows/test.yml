@@ -13,13 +13,12 @@ jobs:
         run:  sudo apt install libpthread-stubs0-dev
       - name: install google logging library
         run:  sudo apt install libgoogle-glog-dev
-
-  catch2:
-    runs-on:  ubuntu-latest
-    steps:
-      - run: git clone -b v2.x https://github.com/catchorg/Catch2.git
-      - run: cmake -BCatch2/build -HCatch2 -DBUILD_TESTING=OFF
-      - run: sudo cmake --build Catch2/build --target install
+      - name: download catch2 v2
+        run:  git clone -b v2.x https://github.com/catchorg/Catch2.git
+      - name: setup catch2
+        run:  cmake -BCatch2/build -HCatch2 -DBUILD_TESTING=OFF
+      - name: build and install catch2
+        run: sudo cmake --build Catch2/build --target install
 
   setup:
     needs:    dependencies
