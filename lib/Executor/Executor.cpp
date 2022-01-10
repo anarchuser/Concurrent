@@ -33,12 +33,6 @@ std::size_t Executor::size () const {
     return sum;
 }
 
-std::string Executor::toString () const {
-    std::stringstream ss;
-    ss << "Executor - tasks left: " << size();
-    return ss.str();
-}
-
 
 // private //
 std::vector <std::unique_ptr <Worker <ITask>>> Executor::workers = std::vector <std::unique_ptr <Worker <ITask>>>();

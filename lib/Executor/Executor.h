@@ -28,8 +28,6 @@ public:
     [[nodiscard]] bool empty () const;
     [[nodiscard]] std::size_t size () const;
 
-    [[nodiscard]] std::string toString () const;
-
 private:
     static std::vector <std::unique_ptr <Worker <ITask>>> workers;
 
