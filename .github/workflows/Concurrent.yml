@@ -14,14 +14,6 @@ jobs:
         run:  sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100 --slave /usr/bin/g++ g++ /usr/bin/g++-10 --slave /usr/bin/gcov gcov /usr/bin/gcov-10
       - name: install threads library
         run:  sudo apt install libpthread-stubs0-dev
-      - name: install google logging library
-        run:  sudo apt install -y libgoogle-glog-dev
-      - name: download catch2 v2
-        run:  git clone -b v2.x https://github.com/catchorg/Catch2.git
-      - name: setup catch2
-        run:  cmake -BCatch2/build -HCatch2 -DBUILD_TESTING=OFF
-      - name: build and install catch2
-        run: sudo cmake --build Catch2/build --target install
 
   benchmarks:
     needs:    dependencies
@@ -41,6 +33,8 @@ jobs:
     needs:    dependencies
     runs-on:  ubuntu-latest
     steps:
+      - name: install google logging library
+        run:  sudo apt install -y libgoogle-glog-dev
       - name: download catch2 v2
         run:  git clone -b v2.x https://github.com/catchorg/Catch2.git
       - name: setup catch2
