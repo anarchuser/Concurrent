@@ -1,14 +1,23 @@
-name: Concurrent - Unit tests
+name: Concurrent
 on: push
 jobs:
-  run-unit-tests:
+  run-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Build project
-      - run: cmake -H. -Bbuild
-      - run: cmake --build build --target Concurrent
-#      - run: cmake --build build --target Test
-#      - run: ./build/Test
-      - name: Run benchmarks
-      - run: ./build/Concurrent
+      - name: Setup cmake
+        run: cmake -H. -Bbuild
+      - name: Build the tests
+        run: cmake --build build --target Test
+      - name: Run the tests
+        run: ./build/Test
+  run-benchmarks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup cmake
+        run: cmake -H. -Bbuild
+      - name: Build the project
+        run: cmake --build build --target Concurrent
+      - name: Run the benchmarks
+        run: ./build/Concurrent
