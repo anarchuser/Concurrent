@@ -4,9 +4,10 @@ jobs:
   dependencies:
     runs-on:  ubuntu-latest
     steps:
-      - run:  g++ -v
       - name: install cmake
         run:  sudo apt install cmake
+      - name: remove g++-9
+        run: sudo apt remove g++-9
       - name: install g++-10
         run:  sudo apt install g++-10
       - name: configure g++ 10 as default
