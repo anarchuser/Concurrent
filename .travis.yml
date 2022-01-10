@@ -38,6 +38,6 @@ before_install:
 script:
   - cmake -H. -Bbuild
   - cmake --build build --target Concurrent
-  - ./build/Concurrent
-#  - cmake --build build --target Test
-#  - ./build/Test
+  - cmake --build build --target Test
+  - ./build/Test
+#  - ./build/Concurrent
