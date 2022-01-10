@@ -11,9 +11,14 @@ file(GLOB_RECURSE SRCS ${PROJECT_SOURCE_DIR}/src/*)
 file(GLOB_RECURSE LIBS ${PROJECT_SOURCE_DIR}/lib/*)
 add_executable(Concurrent src/main.cpp config.h ${SRCS} ${LIBS})
 
+
+set(CMAKE_THREAD_LIBS_INIT "-lpthread")
+set(CMAKE_HAVE_THREADS_LIBRARY 1)
+set(CMAKE_USE_PTHREADS_INIT 1)
 find_package(Threads REQUIRED)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 target_link_libraries(Concurrent Threads::Threads)
+
 target_link_libraries(Concurrent glog)
 
 find_package(Catch2 CONFIG)

@@ -2,7 +2,6 @@ name: Concurrent
 on: [push, pull_request]
 jobs:
   dependencies:
-    needs: catch2
     runs-on:  ubuntu-latest
     steps:
       - name: install cmake
