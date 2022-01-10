@@ -1,26 +1,47 @@
 name: Concurrent
-on: push
+on: [push, pull_request]
 jobs:
-  run-tests:
-    runs-on: ubuntu-latest
+  dependencies:
+    runs-on:  ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Setup cmake
-        run: cmake -H. -Bbuild
-      - name: Build the tests
-        run: cmake --build build --target Test
+      - name: install threads library
+        run: echo "TODO install dependencies here"
+
+  setup:
+    needs:    dependencies
+    runs-on:  ubuntu-latest
+    steps:
+      - name: configure cmake
+        run:  cmake -H. -Bbuild
+
+  build:
+    needs:    setup
+    runs-on:  ubuntu-latest
+    steps:
+      - name: Build src and lib files
+        run:  cmake --build build --target Concurrent
+
+  build-tests:
+    needs:    build
+    runs-on:  ubuntu-latest
+    steps:
+      - name: Build test files
+        run:  cmake --build build --target Test
+
+  tests:
+    needs:    build-tests
+    runs-on:  ubuntu-latest
+    steps:
       - name: Run the tests
         run: ./build/Test
-  run-benchmarks:
+
+  benchmarks:
+    needs: tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Setup cmake
-        run: cmake -H. -Bbuild
-      - name: Build the project
-        run: cmake --build build --target Concurrent
       - name: Run the benchmarks
         run: ./build/Concurrent
+
   sanity-check:
     runs-on: ubuntu-latest
     steps:
