@@ -18,9 +18,8 @@ jobs:
     runs-on:  ubuntu-latest
     steps:
       - run: git clone -b v2.x https://github.com/catchorg/Catch2.git
-      - run: cd Catch2
-      - run: cmake -Bbuild -H. -DBUILD_TESTING=OFF
-      - run: sudo cmake --build build/ --target install
+      - run: cmake -BCatch2/build -HCatch2 -DBUILD_TESTING=OFF
+      - run: sudo cmake --build Catch2/build --target install
 
   setup:
     needs:    dependencies
