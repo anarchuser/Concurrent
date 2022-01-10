@@ -2,10 +2,23 @@ name: Concurrent
 on: [push, pull_request]
 jobs:
   dependencies:
+    needs: catch2
     runs-on:  ubuntu-latest
     steps:
+      - name: install cmake
+        run:  sudo apt install cmake
+      - name: install g++-10
+        run:  sudo apt install g++-10
       - name: install threads library
-        run: echo "TODO install dependencies here"
+        run:  sudo apt install libpthread-stubs0-dev
+      - name: install google logging library
+        run:  libgoogle-glog-dev
+
+  catch2:
+    runs-on:  ubuntu-latest
+    steps:
+      - name: install catch2
+        run: echo "TODO"
 
   setup:
     needs:    dependencies
@@ -47,5 +60,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Do a task that has to be successful
-        run: echo "Hello World"
+#      - name: Do a task that has to be successful
+      - run: echo "Hello World"
