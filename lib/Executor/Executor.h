@@ -12,11 +12,8 @@
 
 class Executor {
 public:
-    Executor() {
-        for (std::size_t worker = workers.size(); worker < AVAILABLE_THREADS; ++worker)
-            workers.template emplace_back (std::make_unique <Worker <ITask>>());
-    }
-    ~Executor() { await(); }
+    Executor();
+    ~Executor();
 
     template <typename R>
     Future <R> schedule (std::function <R()> && task) {
@@ -25,47 +22,17 @@ public:
         next().push (std::move (item));
         return future;
     }
-    void await() const {
-        while (!empty()) std::this_thread::yield();
-    }
+    void await () const;
 
-    [[nodiscard]] bool operator ! () const { return empty(); }
-    [[nodiscard]] bool empty () const {
-        for (auto const & worker : workers)
-            if (!worker->empty())
-                return false;
-        return true;
-    }
-    [[nodiscard]] std::size_t size () const {
-        std::size_t sum = 0;
-        for (auto const & worker : workers)
-            sum += worker->size();
-        return sum;
-    }
-
-    [[nodiscard]] std::string toString () const {
-        std::stringstream ss;
-        ss << "Executor - tasks left: " << size();
-        return ss.str();
-    }
+    [[nodiscard]] bool operator ! () const;
+    [[nodiscard]] bool empty () const;
+    [[nodiscard]] std::size_t size () const;
 
 private:
     static std::vector <std::unique_ptr <Worker <ITask>>> workers;
 
-    Worker <ITask> & next () {
-        std::size_t min = -1;
-        std::size_t min_idx;
-        for (std::size_t idx = 0; idx < AVAILABLE_THREADS; ++idx) {
-            if (workers [idx]->size() < min) {
-                min = workers [idx]->size();
-                min_idx = idx;
-            }
-        }
-        return * workers [min_idx];
-    }
+    Worker <ITask> & next ();
 };
-
-std::vector <std::unique_ptr <Worker <ITask>>> Executor::workers = std::vector <std::unique_ptr <Worker <ITask>>>();
 
 #endif //CONCURRENT_EXECUTOR_H
 
