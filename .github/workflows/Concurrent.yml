@@ -1,5 +1,5 @@
 name: Concurrent
-on: [pull_request]
+on: [push]
 jobs:
   dependencies:
     runs-on:  ubuntu-latest
