@@ -52,10 +52,3 @@ jobs:
     steps:
       - name: Run the benchmarks
         run: ./build/Concurrent
-
-  sanity-check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Do a task that has to be successful
-        run: echo "Hello World"
