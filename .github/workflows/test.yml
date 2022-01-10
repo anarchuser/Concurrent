@@ -53,7 +53,7 @@ jobs:
         run: ./build/Test
 
   benchmarks:
-    needs: tests
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Run the benchmarks
