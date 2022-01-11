@@ -1,4 +1,4 @@
-# Concurrent [![Build](https://travis-ci.com/anarchuser/Concurrent.svg?branch=master)](https://travis-ci.com/anarchuser/Concurrent) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/anarchuser/Concurrent/blob/master/LICENSE)
+# Concurrent [![Concurrent Workflows](https://github.com/anarchuser/Concurrent/actions/workflows/test.yml/badge.svg)](https://github.com/anarchuser/Concurrent/actions) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/anarchuser/Concurrent/blob/master/LICENSE)
 #### A Tasking system
 
 ### Versions

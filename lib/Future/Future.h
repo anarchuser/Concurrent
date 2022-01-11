@@ -13,7 +13,7 @@ template <typename T>
 struct Future : public IFuture {
     Future (std::shared_ptr <T> const item,  std::shared_ptr <std::atomic <bool>> const done): IFuture (done), item {item} {}
     Future (Future const & other) = delete;
-    Future (Future && other): IFuture (std::move (other)), item {other.item} {}
+    Future (Future && other) noexcept : IFuture (std::move (other)), item {other.item} {}
 
     Future & operator = (Future && other) noexcept {
         item = other.item;

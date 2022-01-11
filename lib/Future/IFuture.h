@@ -1,8 +1,9 @@
 #ifndef CONCURRENT_IFUTURE_H
 #define CONCURRENT_IFUTURE_H
 
-#include <thread>
+#include <atomic>
 #include <memory>
+#include <thread>
 
 struct IFuture {
     virtual ~IFuture() = 0;

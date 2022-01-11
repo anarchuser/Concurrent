@@ -1,0 +1,50 @@
+name: Concurrent
+on: [push]
+jobs:
+  dependencies:
+    runs-on:  ubuntu-latest
+    steps:
+      - name: install cmake
+        run:  sudo apt install cmake
+      - name: remove g++-9
+        run: sudo apt remove g++-9
+      - name: install g++-10
+        run:  sudo apt install g++-10
+      - name: configure g++ 10 as default
+        run:  sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100 --slave /usr/bin/g++ g++ /usr/bin/g++-10 --slave /usr/bin/gcov gcov /usr/bin/gcov-10
+      - name: install threads library
+        run:  sudo apt install libpthread-stubs0-dev
+
+  benchmarks:
+    needs:    dependencies
+    runs-on:  ubuntu-latest
+    steps:
+      - name: install google logging library
+        run:  sudo apt install -y libgoogle-glog-dev
+      - uses: actions/checkout@v2
+      - name: configure cmake
+        run:  cmake -H. -Bbuild
+      - name: Build src and lib files
+        run:  cmake --build build --target Concurrent
+      - name: Run the benchmarks
+        run: ./build/Concurrent
+
+  tests:
+    needs:    dependencies
+    runs-on:  ubuntu-latest
+    steps:
+      - name: install google logging library
+        run:  sudo apt install -y libgoogle-glog-dev
+      - name: download catch2 v2
+        run:  git clone -b v2.x https://github.com/catchorg/Catch2.git
+      - name: setup catch2
+        run:  cmake -BCatch2/build -HCatch2 -DBUILD_TESTING=OFF
+      - name: build and install catch2
+        run: sudo cmake --build Catch2/build --target install
+      - uses: actions/checkout@v2
+      - name: configure cmake
+        run:  cmake -H. -Bbuild
+      - name: Build test files
+        run:  cmake --build build --target Test
+      - name: Run the tests
+        run: ./build/Test
